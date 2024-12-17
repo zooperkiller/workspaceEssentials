@@ -1,0 +1,33 @@
+
+<!--ESSENTIALSSS-->
+<template>
+    <div class="product-page">
+        <div class="header">
+            <button class="filter-btn">Filter</button>
+            <span class="sort">
+                Sort by: 
+                <select class="sort-dropdown">
+                    <option value="featured">Featured</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                </select>
+            </span>
+        </div>
+
+        <div class="product-grid">
+            <template for:each={formattedProductMedias} for:item="mediaImage">
+                <div class="product-tile" key={mediaImage.recId}>
+                    <div class="product-image">
+                        <img src={mediaImage.url} />
+                    </div>
+                    <div class="product-details">
+                        <h3 class="product-name">{mediaImage.name}</h3>
+                        <br>
+                        <h2>SKU# <b>{mediaImage.sku}</b></h2>
+                    </div>
+                </div>
+            </template>
+            
+        </div>
+    </div>
+</template>
