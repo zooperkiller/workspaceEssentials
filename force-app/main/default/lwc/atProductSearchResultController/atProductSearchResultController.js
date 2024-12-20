@@ -36,7 +36,9 @@ export default class AtProductSearchResultController extends LightningElement {
                     console.log('result: '+JSON.stringify(result)); 
                     this.productDetail = result;  
                     console.log('Detail result: '+this.productDetail);
-                    console.log('Detail result: '+JSON.parse(this.productDetail));  
+                    console.log('@@',result.productsPage.products);
+                    this.productDetail = result.productsPage.products;  
+                    
                 })
                 .catch(error=>{
                     console.log('error: '+error);
