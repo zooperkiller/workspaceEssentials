@@ -83,6 +83,7 @@ export default class AtProductSearchResultController extends LightningElement {
         }
     }
 
+    //handles the add to cart button 
     handleAddToCart(event){
         console.log('@@inside add to cart');
         let prodId = event.target.id;
