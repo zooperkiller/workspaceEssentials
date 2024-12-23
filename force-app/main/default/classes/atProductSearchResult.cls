@@ -29,19 +29,19 @@ public without sharing class atProductSearchResult {
         ConnectApi.CartItem addCart;
         string webstoreId = atProductSearchResult.getWebStore();
         
-            ConnectApi.CartInput inp = new ConnectApi.CartInput();
-            inp.effectiveAccountId = effectiveAccountId;
-            ConnectApi.CartSummary crcart = ConnectApi.CommerceCart.createCart(webstoreId, inp);
-            system.debug('@@'+crcart);
-            
-            
-            string activeCartOrId = crcart.cartId;
-            ConnectApi.CartItemInput addCartInput = new ConnectApi.CartItemInput();
-            addCartInput.productId = prodId;
-            addCartInput.quantity = '1';
-            addCartInput.type = ConnectApi.CartItemType.Product;
-            addCart = ConnectApi.CommerceCart.addItemToCart(webstoreId, effectiveAccountId,activeCartOrId , addCartInput);
-            system.debug('@@'+addCart);  
+        ConnectApi.CartInput inp = new ConnectApi.CartInput();
+        inp.effectiveAccountId = effectiveAccountId;
+        ConnectApi.CartSummary crcart = ConnectApi.CommerceCart.createCart(webstoreId, inp);
+        system.debug('@@'+crcart);
+        
+        
+        string activeCartOrId = crcart.cartId;
+        ConnectApi.CartItemInput addCartInput = new ConnectApi.CartItemInput();
+        addCartInput.productId = prodId;
+        addCartInput.quantity = '1';
+        addCartInput.type = ConnectApi.CartItemType.Product;
+        addCart = ConnectApi.CommerceCart.addItemToCart(webstoreId, effectiveAccountId,activeCartOrId , addCartInput);
+        system.debug('@@'+addCart);  
         
         return addCart;
     }
