@@ -28,7 +28,7 @@ public without sharing class atProductSearchResult {
         system.debug('@@cart::'+cart);
         ConnectApi.CartItem addCart;
         string webstoreId = atProductSearchResult.getWebStore();
-        if(cart == null){
+        
             ConnectApi.CartInput inp = new ConnectApi.CartInput();
             inp.effectiveAccountId = effectiveAccountId;
             ConnectApi.CartSummary crcart = ConnectApi.CommerceCart.createCart(webstoreId, inp);
@@ -42,10 +42,7 @@ public without sharing class atProductSearchResult {
             addCartInput.type = ConnectApi.CartItemType.Product;
             addCart = ConnectApi.CommerceCart.addItemToCart(webstoreId, effectiveAccountId,activeCartOrId , addCartInput);
             system.debug('@@'+addCart);  
-        }
-        else {
-            
-        }
+        
         return addCart;
     }
 }
