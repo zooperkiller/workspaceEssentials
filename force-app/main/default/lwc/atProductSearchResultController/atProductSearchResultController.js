@@ -4,17 +4,18 @@ import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 import NAME_FIELD from '@salesforce/schema/User.Name';
+import getCartDetails from '@salesforce/apex/atProductSearchResult.getCartDetails';
 export default class AtProductSearchResultController extends LightningElement {
 
 
     @api recordId;//stores the category Id 
     @api effectiveAccountId; //stores the current user's account Id 
     @track error;
-    @track error2;
     @track name ;
     productDetail = [];
     observer;
     catId;
+    addToCartProdId;
 
     connectedCallback(){
         // Initial ID extraction
@@ -61,11 +62,43 @@ export default class AtProductSearchResultController extends LightningElement {
             console.log('name:',this.name, 'accountId:',this.effectiveAccountId);
             if(this.effectiveAccountId){
                 console.log('Account ID:',this.effectiveAccountId ,'++','Category ID:',this.catId);
+                getProductDetailResult({ effectiveAccountId: this.effectiveAccountId , categId: this.catId })
                 
+                .then(result=>{
+                    
+                    console.log('result: '+result); 
+                    console.log('result: '+JSON.stringify(result)); 
+                    this.productDetail = result;  
+                    console.log('Detail result: '+this.productDetail);
+                    console.log('@@',result.productsPage.products);
+                    this.productDetail = result.productsPage.products;  
+                    
+                })
+                .catch(error=>{
+                    console.log('error: '+error);
+                    console.log('error: '+JSON.stringify(error));
+                })
             }
             
         }
     }
 
-    
+    handleAddToCart(event){
+        console.log('@@inside add to cart');
+        let prodId = event.target.id;
+        console.log('@@PRODUCT ID:', prodId);
+        this.addToCartProdId = prodId.replace('-103','');
+        console.log('@@PRODUCT ID:', this.addToCartProdId);
+
+        getCartDetails({effectiveAccountId : this.effectiveAccountId , prodId: this.addToCartProdId})
+        .then (result =>{
+            console.log('@@AddToCart',result);x
+            console.log('@@AddToCart',JSON.stringify(result));
+        })
+        .catch(error =>{
+            console.log('@@AddToCartError',error);
+            console.log('@@AddToCartError',JSON.stringify(error));
+        })
+    }
+
 }
