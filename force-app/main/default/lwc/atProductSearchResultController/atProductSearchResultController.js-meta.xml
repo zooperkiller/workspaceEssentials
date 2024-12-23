@@ -15,7 +15,7 @@
     <targetConfigs>
         <targetConfig targets="lightningCommunity__Default">
         <property name="effectiveAccountId" type="String" label="effective Account Id" default="{!CurrentUser.accountId}" />
-        <property name="recordId" type="String" label="record Id" default="{!recordId}" />
+        <property name="recordId" type="String" label="record Id"  />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

@@ -1,5 +1,8 @@
 <template>
     <div>
+        <p>effName:{name}</p>
+    </div>
+    <div>
         <div class="product-page">
             <div class="header">
                 <button class="filter-btn">Filter</button>
@@ -17,21 +20,18 @@
                 <template for:each={productDetail} for:item="pDetail">
                     <div class="product-tile" key={pDetail.id}>
                         <div class="product-image">
-                            <img src={pDetail.defaultImage.url} />
+                            <img src={pDetail.defaultImage.url} alt="Product Image" />
                         </div>
                         <div class="product-details">
                             <h2>SKU# <b>{pDetail.fields.StockKeepingUnit.value}</b></h2>
-                            <br>
                             <h3 class="product-name">{pDetail.fields.Name.value}</h3>
-                            <br>
-                            <p><b>{pDetail.fields.Description.value}</b></p>
+                            <p>{pDetail.fields.Description.value}</p>
                         </div>
-                        <div>
-                            <h1>STOCK DETAILS</h1>
+                        <div class="add-to-cart-section">
+                            <button class="add-to-cart-btn">ADD TO CART</button>
                         </div>
                     </div>
                 </template>
-                
             </div>
         </div>
     </div>
