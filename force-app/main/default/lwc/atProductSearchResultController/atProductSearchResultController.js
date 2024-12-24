@@ -88,7 +88,7 @@ export default class AtProductSearchResultController extends LightningElement {
         console.log('@@inside add to cart');
         let prodId = event.target.id;
         console.log('@@PRODUCT ID:', prodId);
-        this.addToCartProdId = prodId.replace('-103','');
+        this.addToCartProdId = prodId.split('-')[0];
         console.log('@@PRODUCT ID:', this.addToCartProdId);
 
         getCartDetails({effectiveAccountId : this.effectiveAccountId , prodId: this.addToCartProdId})

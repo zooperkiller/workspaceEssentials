@@ -24,8 +24,8 @@ public without sharing class atProductSearchResult {
     @AuraEnabled
     public static ConnectApi.CartItem getCartDetails( string effectiveAccountId, string prodId){
         
-        WebCart cart = [SELECT Id FROM WebCart ORDER BY CreatedDate desc];
-        system.debug('@@cart::'+cart);
+        // WebCart cart = [SELECT Id FROM WebCart ORDER BY CreatedDate desc];
+        // system.debug('@@cart::'+cart);
         ConnectApi.CartItem addCart;
         string webstoreId = atProductSearchResult.getWebStore();
         
@@ -45,4 +45,27 @@ public without sharing class atProductSearchResult {
         
         return addCart;
     }
+    
+    public static boolean checkWebCartAvailable(string cartStatus){
+        
+        boolean statusOfCart;
+        list<WebCart> cart = [Select Id, Name,status,WebStore.name, 
+                              Account.name,CreatedBy.name from WebCart 
+                              WHERE Status =:cartStatus ORDER BY CreatedDate desc];
+        if(cart.size()>0){
+            statusOfCart = false; //cart is available with status Active
+        }
+        else {
+           statusOfCart = true; //cart is not available with status Active 
+        }
+        system.debug('@@'+statusOfCart);  
+        return statusOfCart; //final return
+    }
+    
+    
+    
+    
+    
+    
+    
 }
