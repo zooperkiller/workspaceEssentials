@@ -1,10 +1,11 @@
 import { LightningElement,api, track,wire } from 'lwc';
 import getProductDetailResult from '@salesforce/apex/atProductSearchResult.getProductDetailResult';
+import getCartDetails from '@salesforce/apex/atProductSearchResult.getCartDetails';
 import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 import NAME_FIELD from '@salesforce/schema/User.Name';
-import getCartDetails from '@salesforce/apex/atProductSearchResult.getCartDetails';
+import checkWebCartAvailable from '@salesforce/apex/atProductSearchResult.checkWebCartAvailable';
 export default class AtProductSearchResultController extends LightningElement {
 
 
@@ -16,6 +17,7 @@ export default class AtProductSearchResultController extends LightningElement {
     observer;
     catId;
     addToCartProdId;
+    currentUserId = USER_ID;
 
     connectedCallback(){
         // Initial ID extraction
@@ -57,6 +59,7 @@ export default class AtProductSearchResultController extends LightningElement {
         {
             console.log('1st wire result: '+data);
             console.log('1st wire result: '+JSON.stringify(data));
+            console.log('1st current user id:',this.currentUserId);
             this.name = data.fields.Name.value;
             this.effectiveAccountId = data.fields.AccountId.value;
             console.log('name:',this.name, 'accountId:',this.effectiveAccountId);
@@ -91,15 +94,23 @@ export default class AtProductSearchResultController extends LightningElement {
         this.addToCartProdId = prodId.split('-')[0];
         console.log('@@PRODUCT ID:', this.addToCartProdId);
 
-        getCartDetails({effectiveAccountId : this.effectiveAccountId , prodId: this.addToCartProdId})
-        .then (result =>{
-            console.log('@@AddToCart',result);x
-            console.log('@@AddToCart',JSON.stringify(result));
+        checkWebCartAvailable({currentUserId:this.currentUserId,currentBuyerAccount:this.effectiveAccountId})
+        .then(res=>{
+            console.log('@@res',res);
         })
-        .catch(error =>{
-            console.log('@@AddToCartError',error);
-            console.log('@@AddToCartError',JSON.stringify(error));
+        .catch(err=>{
+            console.log('@@err',err);
         })
+
+        // getCartDetails({effectiveAccountId : this.effectiveAccountId , prodId: this.addToCartProdId})
+        // .then (result =>{
+        //     console.log('@@AddToCart',result);x
+        //     console.log('@@AddToCart',JSON.stringify(result));
+        // })
+        // .catch(error =>{
+        //     console.log('@@AddToCartError',error);
+        //     console.log('@@AddToCartError',JSON.stringify(error));
+        // })
     }
 
 }

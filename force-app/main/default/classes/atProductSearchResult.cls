@@ -46,23 +46,38 @@ public without sharing class atProductSearchResult {
         return addCart;
     }
     
-    public static boolean checkWebCartAvailable(string cartStatus){
+    @AuraEnabled
+    public static Boolean checkWebCartAvailable(String currentUserId, String currentBuyerAccount){
         
-        boolean statusOfCart;
-        list<WebCart> cart = [Select Id, Name,status,WebStore.name, 
-                              Account.name,CreatedBy.name from WebCart 
-                              WHERE Status =:cartStatus ORDER BY CreatedDate desc];
+        Boolean statusOfCart;
+        list<WebCart> cart = [SELECT Id, Name,status,WebStoreId, AccountId,CreatedById  
+                              FROM WebCart 
+                              WHERE CreatedById =:currentUserId
+                              AND AccountId=:currentBuyerAccount
+                              AND status='Active'
+                              AND WebStoreId=:atProductSearchResult.getWebStore()];
         if(cart.size()>0){
             statusOfCart = false; //cart is available with status Active
         }
         else {
-           statusOfCart = true; //cart is not available with status Active 
+            statusOfCart = true; //cart is not available with status Active 
         }
         system.debug('@@'+statusOfCart);  
         return statusOfCart; //final return
     }
     
-    
+    public class cartDetailWrapper {
+        @AuraEnabled
+        public string cartStatus{get;set;}
+        @AuraEnabled
+        public string currentUserId{get;set;}
+        @AuraEnabled
+        public string currentBuyerAccount{get;set;}
+        @AuraEnabled
+        public string currentStoreId{get;set;}
+        @AuraEnabled
+        public boolean isCartAvailable{get;set;}
+    }
     
     
     
