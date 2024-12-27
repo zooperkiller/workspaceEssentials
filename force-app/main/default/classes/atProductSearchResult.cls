@@ -46,24 +46,63 @@ public without sharing class atProductSearchResult {
         return addCart;
     }
     
-    public static boolean checkWebCartAvailable(string cartStatus){
+    @AuraEnabled
+    public static cartDetailWrapper checkWebCartAvailable(String currentUserId, String currentBuyerAccount) {
+        // Initialize the wrapper object
+        cartDetailWrapper cartWrap = new cartDetailWrapper();
+        cartWrap.cartStatus = false; // Default to no active cart found
+        cartWrap.availableCartId = null; // Default to no cart ID
         
-        boolean statusOfCart;
-        list<WebCart> cart = [Select Id, Name,status,WebStore.name, 
-                              Account.name,CreatedBy.name from WebCart 
-                              WHERE Status =:cartStatus ORDER BY CreatedDate desc];
-        if(cart.size()>0){
-            statusOfCart = false; //cart is available with status Active
+        // Query for active carts
+        List<WebCart> cartList = [
+            SELECT Id, Name, Status, WebStoreId, AccountId, CreatedById
+            FROM WebCart
+            WHERE CreatedById = :currentUserId
+            AND AccountId = :currentBuyerAccount
+            AND Status = 'Active'
+            AND WebStoreId = :atProductSearchResult.getWebStore()
+        ];
+        
+        // Process the query results
+        if (!cartList.isEmpty()) {
+            WebCart activeCart = cartList[0]; // Assuming there's only one active cart
+            cartWrap.cartStatus = true; // Active cart found
+            cartWrap.availableCartId = activeCart.Id; // Set the cart ID
         }
-        else {
-           statusOfCart = true; //cart is not available with status Active 
-        }
-        system.debug('@@'+statusOfCart);  
-        return statusOfCart; //final return
+        
+        System.debug('@@ Cart Wrapper Details: ' + cartWrap);
+        String cartDetailsMessage = deleteActiveCart(cartWrap);
+    	System.debug('Cart Details Message: ' + cartDetailsMessage);
+        return cartWrap; // Return the wrapper with details
     }
     
+    // Wrapper class to return the response
+    public class cartDetailWrapper {
+        @AuraEnabled
+        public Boolean cartStatus { get; set; } // Indicates if a cart is available
+        @AuraEnabled
+        public String availableCartId { get; set; } // ID of the available cart
+    }
     
-    
+    //Assumption as to the active cart can be deleted. 
+    @AuraEnabled
+    public static String deleteActiveCart(cartDetailWrapper cartWrapper){
+        
+        if (cartWrapper.cartStatus) {
+            // If an active cart exists
+            System.debug('Active Cart Found: ' + cartWrapper.availableCartId);
+            string webstoreId=atProductSearchResult.getWebStore();
+            string effectiveAccountId = '001WU00000YN1UUYA1';
+            string activeCartOrId = cartWrapper.availableCartId;
+            ConnectApi.CommerceCart.deleteCart(webstoreId, effectiveAccountId, activeCartOrId);
+            return 'Cart is Active. Cart ID: ' + cartWrapper.availableCartId;
+        } else {
+            // If no active cart exists
+            // If no active cart exists
+            System.debug('No Active Cart Found.');
+            return 'No Active Cart Found.';
+        }
+    }
     
     
     
