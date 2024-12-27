@@ -98,6 +98,7 @@ public without sharing class atProductSearchResult {
             return 'Cart is Active. Cart ID: ' + cartWrapper.availableCartId;
         } else {
             // If no active cart exists
+            // If no active cart exists
             System.debug('No Active Cart Found.');
             return 'No Active Cart Found.';
         }
