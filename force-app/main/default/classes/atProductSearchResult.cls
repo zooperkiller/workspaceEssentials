@@ -94,7 +94,8 @@ public without sharing class atProductSearchResult {
             string webstoreId=atProductSearchResult.getWebStore();
             string effectiveAccountId = '001WU00000YN1UUYA1';
             string activeCartOrId = cartWrapper.availableCartId;
-            ConnectApi.CommerceCart.deleteCart(webstoreId, effectiveAccountId, activeCartOrId);
+            //commenting to update the cart item. 
+            //ConnectApi.CommerceCart.deleteCart(webstoreId, effectiveAccountId, activeCartOrId);
             return 'Cart is Active. Cart ID: ' + cartWrapper.availableCartId;
         } else {
             // If no active cart exists
