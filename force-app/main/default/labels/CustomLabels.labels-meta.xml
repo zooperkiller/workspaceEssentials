@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>WS_WebStoreID</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>WS_WebStoreID</shortDescription>
+        <value>0ZEWU000001cxGD4AY</value>
+    </labels>
+</CustomLabels>

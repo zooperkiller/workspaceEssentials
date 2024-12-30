@@ -97,6 +97,12 @@ export default class AtProductSearchResultController extends LightningElement {
         checkWebCartAvailable({currentUserId:this.currentUserId,currentBuyerAccount:this.effectiveAccountId})
         .then(res=>{
             console.log('@@res',res);
+            if(res.cartStatus == true){
+                console.log('@@ WE HAVE A CART');
+            }
+            else {
+                console.log('@@ WE DO NOT HAVE A CART');
+            }
         })
         .catch(err=>{
             console.log('@@err',err);
