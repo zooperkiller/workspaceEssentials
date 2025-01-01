@@ -99,6 +99,7 @@ export default class AtProductSearchResultController extends LightningElement {
             console.log('@@res',res);
             if(res.cartStatus == true){
                 console.log('@@ WE HAVE A CART');
+                console.log('@@ WE HAVE A CART');
             }
             else {
                 console.log('@@ WE DO NOT HAVE A CART');

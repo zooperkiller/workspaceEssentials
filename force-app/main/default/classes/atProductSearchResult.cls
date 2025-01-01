@@ -24,8 +24,6 @@ public without sharing class atProductSearchResult {
     @AuraEnabled
     public static ConnectApi.CartItem getCartDetails( string effectiveAccountId, string prodId){
         
-        // WebCart cart = [SELECT Id FROM WebCart ORDER BY CreatedDate desc];
-        // system.debug('@@cart::'+cart);
         ConnectApi.CartItem addCart;
         string webstoreId = atProductSearchResult.getWebStore();
         
