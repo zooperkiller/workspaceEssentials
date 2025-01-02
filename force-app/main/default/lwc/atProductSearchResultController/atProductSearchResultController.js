@@ -1,6 +1,5 @@
 import { LightningElement,api, track,wire } from 'lwc';
 import getProductDetailResult from '@salesforce/apex/atProductSearchResult.getProductDetailResult';
-import getCartDetails from '@salesforce/apex/atProductSearchResult.getCartDetails';
 import checkWebCartAvailable from '@salesforce/apex/atProductSearchResult.checkWebCartAvailable';
 import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
@@ -94,16 +93,10 @@ export default class AtProductSearchResultController extends LightningElement {
         this.addToCartProdId = prodId.split('-')[0];
         console.log('@@PRODUCT ID:', this.addToCartProdId);
 
-        checkWebCartAvailable({currentUserId:this.currentUserId,currentBuyerAccount:this.effectiveAccountId})
+        checkWebCartAvailable({currentUserId:this.currentUserId,currentBuyerAccount:this.effectiveAccountId,prodId:this.addToCartProdId})
         .then(res=>{
             console.log('@@res',res);
-            if(res.cartStatus == true){
-                console.log('@@ WE HAVE A CART');
-                console.log('@@ WE HAVE A CART');
-            }
-            else {
-                console.log('@@ WE DO NOT HAVE A CART');
-            }
+           
         })
         .catch(err=>{
             console.log('@@err',err);
