@@ -1,3 +1,40 @@
+/*
+@Author: Anish Thakurta
+@Date: 05 January 2025
+@Description:   This class provides utility methods for product search and cart management in a Salesforce B2B Commerce setup. 
+                It leverages ConnectApi to interact with Salesforce Commerce features like searching for products and managing carts.
+@Methods & Details: 
+1. getProductDetailResult
+        Purpose: Fetches product search results for a specific category ID and effective account in a given web store.
+        Parameters:
+        effectiveAccountId (String): The ID of the account for which the search is performed.
+        categId (String): The category ID used to filter the product search.
+        Returns: ConnectApi.ProductSearchResults containing the list of products matching the search criteria.
+2. checkWebCartAvailable
+        Purpose: Checks if an active cart exists for a user and account. If no cart exists, creates one and adds a product to it.
+        Parameters:
+        currentUserId (String): The ID of the currently logged-in user.
+        currentBuyerAccount (String): The account ID of the buyer.
+        prodId (String): The ID of the product to be added to the cart.
+        Returns: String containing the cart ID if an active cart is found or created, otherwise null.
+3. getOrCreateCartId
+        Purpose: Deletes or creates an active cart and returns the cart ID.
+        Parameters:
+        cartStatus (Boolean): Indicates whether an active cart exists.
+        availableCartId (String): The ID of the existing active cart, if any.
+        currentBuyerAccount (String): The account ID of the buyer.
+        prodId (String): The ID of the product to be added to the cart.
+        Returns: String containing the cart ID or null if no cart is created.
+4. addItemToCart (Helper Method)
+        Purpose: Adds a product to a specified cart.
+        Parameters:
+        webstoreId (String): The ID of the web store.
+        accountId (String): The account ID of the buyer.
+        cartId (String): The ID of the cart to which the product is added.
+        productId (String): The ID of the product to be added.
+        Returns: void.
+*/ 
+
 public without sharing class atProductSearchResult {
     
     @AuraEnabled
@@ -18,6 +55,7 @@ public without sharing class atProductSearchResult {
     
     @AuraEnabled
     public static String checkWebCartAvailable(String currentUserId, String currentBuyerAccount, String prodId) {
+         string webstoreId = system.label.WS_WebStoreID;
         // Query for the first active cart (optimized with LIMIT 1)
         WebCart activeCart = [
             SELECT Id, Name, Status, WebStoreId, AccountId, CreatedById
@@ -25,7 +63,7 @@ public without sharing class atProductSearchResult {
             WHERE CreatedById = :currentUserId
             AND AccountId = :currentBuyerAccount
             AND Status = 'Active'
-            AND WebStoreId =: system.label.WS_WebStoreID
+            AND WebStoreId =: webstoreId
             LIMIT 1
         ];
         
