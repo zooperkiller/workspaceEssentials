@@ -91,6 +91,7 @@ export default class AtProductSearchResultController extends LightningElement {
     handleAddToCart(event){
         console.log('@@inside add to cart');
         console.log('@@PRODUCT NAME:', event.currentTarget.dataset.name);
+        let prodName = event.currentTarget.dataset.name;
         let prodId = event.target.id;
         console.log('@@PRODUCT ID:', prodId);
         this.addToCartProdId = prodId.split('-')[0];
@@ -99,7 +100,7 @@ export default class AtProductSearchResultController extends LightningElement {
         checkWebCartAvailable({currentUserId:this.currentUserId,currentBuyerAccount:this.effectiveAccountId,prodId:this.addToCartProdId})
         .then(res=>{
             console.log('@@res',res);
-            this.template.querySelector('c-at-toast-message-utility').showToast('success', 'Product has been added to the cart.');
+            this.template.querySelector('c-at-toast-message-utility').showToast('success', prodName + ' added to cart.');
             
             
         })
