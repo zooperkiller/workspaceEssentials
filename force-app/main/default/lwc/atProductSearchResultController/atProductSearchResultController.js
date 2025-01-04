@@ -5,6 +5,8 @@ import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 import NAME_FIELD from '@salesforce/schema/User.Name';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
 export default class AtProductSearchResultController extends LightningElement {
 
 
@@ -88,6 +90,7 @@ export default class AtProductSearchResultController extends LightningElement {
     //handles the add to cart button 
     handleAddToCart(event){
         console.log('@@inside add to cart');
+        console.log('@@PRODUCT NAME:', event.currentTarget.dataset.name);
         let prodId = event.target.id;
         console.log('@@PRODUCT ID:', prodId);
         this.addToCartProdId = prodId.split('-')[0];
@@ -96,21 +99,21 @@ export default class AtProductSearchResultController extends LightningElement {
         checkWebCartAvailable({currentUserId:this.currentUserId,currentBuyerAccount:this.effectiveAccountId,prodId:this.addToCartProdId})
         .then(res=>{
             console.log('@@res',res);
-           
+            this.template.querySelector('c-at-toast-message-utility').showToast('success', 'Product has been added to the cart.');
+            
+            
         })
         .catch(err=>{
             console.log('@@err',err);
+            this.template.querySelector('c-at-toast-message-utility').showToast('error', err);
+            
         })
 
-        // getCartDetails({effectiveAccountId : this.effectiveAccountId , prodId: this.addToCartProdId})
-        // .then (result =>{
-        //     console.log('@@AddToCart',result);x
-        //     console.log('@@AddToCart',JSON.stringify(result));
-        // })
-        // .catch(error =>{
-        //     console.log('@@AddToCartError',error);
-        //     console.log('@@AddToCartError',JSON.stringify(error));
-        // })
+        
     }
 
+    showToast(){
+        this.template.querySelector('c-at-toast-message-utility').showToast('success', 'This is a Success Message.');
+
+    }
 }
