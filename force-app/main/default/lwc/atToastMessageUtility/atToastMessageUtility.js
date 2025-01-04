@@ -1,3 +1,13 @@
+/*Author: Anish Thakurta*/
+/*
+@Description: This is a utility class which is used to display toast messages.
+@Date:05 January 2025
+@method: showToast
+@param: type: success, error, info, warning
+@param: message: message to be displayed
+@param: autoCloseTime: time for the toast message to be displayed
+*/ 
+
 import { LightningElement,api,track } from 'lwc';
 export default class AtToastMessageUtility extends LightningElement {
 

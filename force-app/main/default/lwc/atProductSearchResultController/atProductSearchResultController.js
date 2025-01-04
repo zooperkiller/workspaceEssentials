@@ -1,3 +1,17 @@
+/*
+@Author:Anish Thakurta
+@description:   This is an LWC which helps to get the product details from category 
+                 and display it in a grid.
+                 Also adds the product to cart.
+                 On successful addition of cart , a toast message is displayed.
+@date:05 January 2022
+@method: 
+
+
+
+*/
+
+
 import { LightningElement,api, track,wire } from 'lwc';
 import getProductDetailResult from '@salesforce/apex/atProductSearchResult.getProductDetailResult';
 import checkWebCartAvailable from '@salesforce/apex/atProductSearchResult.checkWebCartAvailable';
