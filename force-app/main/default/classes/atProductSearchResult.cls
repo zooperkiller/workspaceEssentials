@@ -57,7 +57,7 @@ public without sharing class atProductSearchResult {
     public static String checkWebCartAvailable(String currentUserId, String currentBuyerAccount, String prodId) {
          string webstoreId = system.label.WS_WebStoreID;
         // Query for the first active cart (optimized with LIMIT 1)
-        WebCart activeCart = [
+        List<WebCart> activeCartList = [
             SELECT Id, Name, Status, WebStoreId, AccountId, CreatedById
             FROM WebCart
             WHERE CreatedById = :currentUserId
@@ -66,7 +66,7 @@ public without sharing class atProductSearchResult {
             AND WebStoreId =: webstoreId
             LIMIT 1
         ];
-        
+        WebCart activeCart = activeCartList.isEmpty() ? null : activeCartList[0];
         // Determine cart details
         Boolean cartStatus = (activeCart != null);
         String availableCartId = cartStatus ? activeCart.Id : null;
