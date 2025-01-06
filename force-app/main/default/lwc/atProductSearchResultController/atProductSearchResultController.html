@@ -24,7 +24,7 @@
                         <div class="product-image">
                             <img src={pDetail.defaultImage.url} alt="Product Image" />
                         </div>
-                        <div class="product-details">
+                        <div class="product-details" onclick={handlePDPPage} data-id={pDetail.id}>
                             <h2>SKU# <b>{pDetail.fields.StockKeepingUnit.value}</b></h2>
                             <h3 class="product-name">{pDetail.fields.Name.value}</h3>
                             <p>{pDetail.fields.Description.value}</p>

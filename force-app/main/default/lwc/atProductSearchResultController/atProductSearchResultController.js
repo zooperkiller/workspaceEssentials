@@ -19,8 +19,7 @@ import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 import NAME_FIELD from '@salesforce/schema/User.Name';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
+import { NavigationMixin } from 'lightning/navigation';
 export default class AtProductSearchResultController extends LightningElement {
 
 
@@ -127,8 +126,13 @@ export default class AtProductSearchResultController extends LightningElement {
         
     }
 
-    showToast(){
-        this.template.querySelector('c-at-toast-message-utility').showToast('success', 'This is a Success Message.');
-
+    handlePDPPage(event){
+        console.log('@@Inside Handle PDP Page');
+        console.log('@@PDP', event.currentTarget.dataset.id);
+        let prodDetail = event.currentTarget.dataset.id;
+        console.log('@@PDP ID:', prodDetail);
+        
+        
+       
     }
 }
