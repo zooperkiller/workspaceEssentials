@@ -1,11 +1,25 @@
+/*
+@Author:Anish Thakurta
+@description:   This is an LWC which helps to get the product details from category 
+                 and display it in a grid.
+                 Also adds the product to cart.
+                 On successful addition of cart , a toast message is displayed.
+@date:05 January 2022
+@method: 
+
+
+
+*/
+
+
 import { LightningElement,api, track,wire } from 'lwc';
 import getProductDetailResult from '@salesforce/apex/atProductSearchResult.getProductDetailResult';
-import getCartDetails from '@salesforce/apex/atProductSearchResult.getCartDetails';
 import checkWebCartAvailable from '@salesforce/apex/atProductSearchResult.checkWebCartAvailable';
 import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 import NAME_FIELD from '@salesforce/schema/User.Name';
+import { NavigationMixin } from 'lightning/navigation';
 export default class AtProductSearchResultController extends LightningElement {
 
 
@@ -89,35 +103,36 @@ export default class AtProductSearchResultController extends LightningElement {
     //handles the add to cart button 
     handleAddToCart(event){
         console.log('@@inside add to cart');
+        console.log('@@PRODUCT NAME:', event.currentTarget.dataset.name);
+        let prodName = event.currentTarget.dataset.name;
         let prodId = event.target.id;
         console.log('@@PRODUCT ID:', prodId);
         this.addToCartProdId = prodId.split('-')[0];
         console.log('@@PRODUCT ID:', this.addToCartProdId);
 
-        checkWebCartAvailable({currentUserId:this.currentUserId,currentBuyerAccount:this.effectiveAccountId})
+        checkWebCartAvailable({currentUserId:this.currentUserId,currentBuyerAccount:this.effectiveAccountId,prodId:this.addToCartProdId})
         .then(res=>{
             console.log('@@res',res);
-            if(res.cartStatus == true){
-                console.log('@@ WE HAVE A CART');
-                console.log('@@ WE HAVE A CART');
-            }
-            else {
-                console.log('@@ WE DO NOT HAVE A CART');
-            }
+            this.template.querySelector('c-at-toast-message-utility').showToast('success', prodName + ' added to cart.');
+            
+            
         })
         .catch(err=>{
             console.log('@@err',err);
+            this.template.querySelector('c-at-toast-message-utility').showToast('error', err);
+            
         })
 
-        // getCartDetails({effectiveAccountId : this.effectiveAccountId , prodId: this.addToCartProdId})
-        // .then (result =>{
-        //     console.log('@@AddToCart',result);x
-        //     console.log('@@AddToCart',JSON.stringify(result));
-        // })
-        // .catch(error =>{
-        //     console.log('@@AddToCartError',error);
-        //     console.log('@@AddToCartError',JSON.stringify(error));
-        // })
+        
     }
 
+    handlePDPPage(event){
+        console.log('@@Inside Handle PDP Page');
+        console.log('@@PDP', event.currentTarget.dataset.id);
+        let prodDetail = event.currentTarget.dataset.id;
+        console.log('@@PDP ID:', prodDetail);
+        
+        
+       
+    }
 }

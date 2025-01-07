@@ -1,6 +1,8 @@
 <template>
     <div>
         <p>effName:{name}</p>
+        <c-at-toast-message-utility auto-close-time="8000"></c-at-toast-message-utility>
+        <lightning-button onclick={showToast} label="Show Toast"></lightning-button>
     </div>
     <div>
         <div class="product-page">
@@ -22,13 +24,13 @@
                         <div class="product-image">
                             <img src={pDetail.defaultImage.url} alt="Product Image" />
                         </div>
-                        <div class="product-details">
+                        <div class="product-details" onclick={handlePDPPage} data-id={pDetail.id}>
                             <h2>SKU# <b>{pDetail.fields.StockKeepingUnit.value}</b></h2>
                             <h3 class="product-name">{pDetail.fields.Name.value}</h3>
                             <p>{pDetail.fields.Description.value}</p>
                         </div>
                         <div class="add-to-cart-section">
-                            <button class="add-to-cart-btn" id={pDetail.id} onclick={handleAddToCart}>ADD TO CART</button>
+                            <button class="add-to-cart-btn" id={pDetail.id} data-name={pDetail.fields.Name.value} onclick={handleAddToCart}>ADD TO CART</button>
                         </div>
                     </div>
                 </template>
