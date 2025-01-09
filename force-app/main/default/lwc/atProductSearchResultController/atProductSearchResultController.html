@@ -32,9 +32,49 @@
                         <div class="add-to-cart-section">
                             <button class="add-to-cart-btn" id={pDetail.id} data-name={pDetail.fields.Name.value} onclick={handleAddToCart}>ADD TO CART</button>
                         </div>
+                        <div class="add-to-cart-section">
+                            <button class="add-to-wish-btn" data-id={pDetail.id} data-name={pDetail.fields.Name.value} onclick={handleAddToWishlist}>ADD TO WISHLIST</button>
+                        </div>
                     </div>
                 </template>
             </div>
         </div>
     </div>
+
+     <!-- Modal -->
+     <template if:true={isModalOpen}>
+        <div class="modal-container">
+            <section class="modal-content">
+                <header class="modal-header">
+                    <h2>ADD TO WISHLIST</h2>
+                    <button class="close-button" title="Close" onclick={handleCloseModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="Close"></lightning-icon>
+                    </button>
+                </header>
+                <div class="modal-body">
+                    <lightning-input
+                        class="input-field"
+                        label="New Wishlist Name"
+                        placeholder="Enter name for new wishlist"
+                        value={newWishlistName}
+                        onchange={handleNewWishlistNameChange}>
+                    </lightning-input>
+
+                    <lightning-combobox
+                        class="dropdown-field"
+                        label="Add to Existing Wishlist"
+                        placeholder="Select a wishlist"
+                        options={wishlists}
+                        value={selectedWishlistId}
+                        onchange={handleWishlistSelection}>
+                    </lightning-combobox>
+                </div>
+                <footer class="modal-footer">
+                    <lightning-button label="CANCEL" class="cancel-button" onclick={handleCloseModal}></lightning-button>
+                    <lightning-button label="SAVE" class="save-button" variant="brand" onclick={handleSave}></lightning-button>
+                </footer>
+            </section>
+            <div class="backdrop"></div>
+        </div>
+    </template>
 </template>

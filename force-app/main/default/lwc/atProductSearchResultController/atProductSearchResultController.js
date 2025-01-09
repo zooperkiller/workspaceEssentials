@@ -20,6 +20,8 @@ import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 import NAME_FIELD from '@salesforce/schema/User.Name';
 import { NavigationMixin } from 'lightning/navigation';
+import getAllWishlists from '@salesforce/apex/WishlistController.getAllWishlists';
+
 export default class AtProductSearchResultController extends LightningElement {
 
 
@@ -34,6 +36,8 @@ export default class AtProductSearchResultController extends LightningElement {
     currentUserId = USER_ID;
 
     connectedCallback(){
+
+
         // Initial ID extraction
         this.extractIdFromUrl();
 
@@ -134,5 +138,42 @@ export default class AtProductSearchResultController extends LightningElement {
         
         
        
+    }
+
+    @track wishlists = []; // Store all wishlists for the dropdown
+    @track selectedWishlistId = ''; // Selected wishlist ID
+    @track newWishlistName = ''; // New wishlist name
+    @track isModalOpen = false; // Modal visibility
+    @track isLoading = false;
+
+
+
+    handleAddToWishlist(event){
+        console.log('@@Inside Handle Wishlist Page');
+        let prodWish = event.currentTarget.dataset.id;
+        console.log('@@PDP Wish ID:', prodWish);
+        this.isModalOpen = true;
+        this.fetchAllWishlists();
+       
+            
+    }
+
+    fetchAllWishlists(){
+        
+        getAllWishlists({})
+        .then(result=>{
+            console.log('@@result wish',result);
+            this.wishlists = result.map(wishlist => ({
+                label: wishlist.Name,
+                value: wishlist.Id,
+            }));
+        })
+        .catch(err=>{
+            console.log('@@err-wish',err);
+        })
+    }
+
+    handleCloseModal() {
+        this.isModalOpen = false;
     }
 }
