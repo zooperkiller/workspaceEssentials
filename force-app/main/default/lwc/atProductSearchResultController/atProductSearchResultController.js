@@ -21,6 +21,8 @@ import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 import NAME_FIELD from '@salesforce/schema/User.Name';
 import { NavigationMixin } from 'lightning/navigation';
 import getAllWishlists from '@salesforce/apex/WishlistController.getAllWishlists';
+import createWishList from '@salesforce/apex/WishlistController.createWishList';
+
 
 export default class AtProductSearchResultController extends LightningElement {
 
@@ -154,7 +156,7 @@ export default class AtProductSearchResultController extends LightningElement {
         console.log('@@PDP Wish ID:', prodWish);
         this.isModalOpen = true;
         this.fetchAllWishlists();
-       
+        
             
     }
 
@@ -173,6 +175,27 @@ export default class AtProductSearchResultController extends LightningElement {
         })
     }
 
+    handleWishlistSelection(event) {
+        this.selectedWishlistId = event.target.value;
+        console.log('@@WISHSELECTION-wish',this.selectedWishlistId);
+    }
+
+    handleNewWishlistNameChange(event) {
+        this.newWishlistName = event.target.value;
+        console.log('@@WISHNAME-wish',this.newWishlistName);
+    }
+
+    handleSave(){
+        createWishList({})
+        .then(result=>{
+            console.log('@@result wish create',result);
+            this.template.querySelector('c-at-toast-message-utility').showToast('success',  + ' added to wishlist.');
+        })
+        .catch(err=>{
+            console.log('@@err-wish- create',err);
+            this.template.querySelector('c-at-toast-message-utility').showToast('error',  + ' ERROR:' + err + '.');
+        })
+    }
     handleCloseModal() {
         this.isModalOpen = false;
     }
