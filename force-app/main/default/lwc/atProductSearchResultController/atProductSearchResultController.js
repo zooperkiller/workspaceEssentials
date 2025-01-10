@@ -19,9 +19,8 @@ import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 import NAME_FIELD from '@salesforce/schema/User.Name';
-import { NavigationMixin } from 'lightning/navigation';
 import getAllWishlists from '@salesforce/apex/WishlistController.getAllWishlists';
-import createWishList from '@salesforce/apex/WishlistController.createWishList';
+import createOrUpdateWishlist from '@salesforce/apex/WishlistController.createOrUpdateWishlist';
 
 
 export default class AtProductSearchResultController extends LightningElement {
@@ -147,13 +146,13 @@ export default class AtProductSearchResultController extends LightningElement {
     @track newWishlistName = ''; // New wishlist name
     @track isModalOpen = false; // Modal visibility
     @track isLoading = false;
-
+    @track isWishlistAvailable = true;
 
 
     handleAddToWishlist(event){
         console.log('@@Inside Handle Wishlist Page');
         let prodWish = event.currentTarget.dataset.id;
-        console.log('@@PDP Wish ID:', prodWish);
+        console.log('@@Product Wish ID:', prodWish);
         this.isModalOpen = true;
         this.fetchAllWishlists();
         
@@ -162,13 +161,20 @@ export default class AtProductSearchResultController extends LightningElement {
 
     fetchAllWishlists(){
         
-        getAllWishlists({})
+        getAllWishlists({currentUserId:this.currentUserId,effectiveAccountId:this.effectiveAccountId})
         .then(result=>{
             console.log('@@result wish',result);
-            this.wishlists = result.map(wishlist => ({
-                label: wishlist.Name,
-                value: wishlist.Id,
-            }));
+            if(result.length > 0) {
+                this.isWishlistAvailable = true;
+                this.wishlists = result.map(wishlist => ({
+                    label: wishlist.Name,
+                    value: wishlist.Id,
+                }));
+            }
+            else {
+                this.isWishlistAvailable = false;
+            }
+            
         })
         .catch(err=>{
             console.log('@@err-wish',err);
@@ -186,15 +192,15 @@ export default class AtProductSearchResultController extends LightningElement {
     }
 
     handleSave(){
-        createWishList({})
-        .then(result=>{
-            console.log('@@result wish create',result);
-            this.template.querySelector('c-at-toast-message-utility').showToast('success',  + ' added to wishlist.');
-        })
-        .catch(err=>{
-            console.log('@@err-wish- create',err);
-            this.template.querySelector('c-at-toast-message-utility').showToast('error',  + ' ERROR:' + err + '.');
-        })
+        // createWishList({})
+        // .then(result=>{
+        //     console.log('@@result wish create',result);
+        //     this.template.querySelector('c-at-toast-message-utility').showToast('success',  + ' added to wishlist.');
+        // })
+        // .catch(err=>{
+        //     console.log('@@err-wish- create',err);
+        //     this.template.querySelector('c-at-toast-message-utility').showToast('error',  + ' ERROR:' + err + '.');
+        // })
     }
     handleCloseModal() {
         this.isModalOpen = false;

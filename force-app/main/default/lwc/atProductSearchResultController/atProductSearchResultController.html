@@ -59,15 +59,17 @@
                         value={newWishlistName}
                         onchange={handleNewWishlistNameChange}>
                     </lightning-input>
-
-                    <lightning-combobox
-                        class="dropdown-field"
-                        label="Add to Existing Wishlist"
-                        placeholder="Select a wishlist"
-                        options={wishlists}
-                        value={selectedWishlistId}
-                        onchange={handleWishlistSelection}>
-                    </lightning-combobox>
+                    <template if:true={isWishlistAvailable}>
+                        <lightning-combobox
+                            class="dropdown-field"
+                            label="Add to Existing Wishlist"
+                            placeholder="Select a wishlist"
+                            options={wishlists}
+                            value={selectedWishlistId}
+                            onchange={handleWishlistSelection}>
+                        </lightning-combobox>
+                    </template>
+                    
                 </div>
                 <footer class="modal-footer">
                     <button class="button-49" onclick={handleCloseModal}>CANCEL</button>
