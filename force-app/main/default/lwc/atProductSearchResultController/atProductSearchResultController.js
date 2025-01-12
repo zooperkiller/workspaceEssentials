@@ -147,16 +147,36 @@ export default class AtProductSearchResultController extends LightningElement {
     @track isModalOpen = false; // Modal visibility
     @track isLoading = false;
     @track isWishlistAvailable = true;
+    @track selectedOption = 'new'; // Default option: 'new' or 'existing'
+    @track prodWish;
 
 
     handleAddToWishlist(event){
         console.log('@@Inside Handle Wishlist Page');
-        let prodWish = event.currentTarget.dataset.id;
-        console.log('@@Product Wish ID:', prodWish);
+        this.prodWish = event.currentTarget.dataset.id;
+        console.log('@@Product Wish ID:', this.prodWish);
         this.isModalOpen = true;
         this.fetchAllWishlists();
         
             
+    }
+
+    // Options for the radio group
+    wishlistOptions = [
+        { label: 'Create New Wishlist', value: 'new' },
+        { label: 'Add to Existing Wishlist', value: 'existing' }
+    ];
+
+    get isNewWishlistSelected() {
+        return this.selectedOption === 'new';
+    }
+
+    get isExistingWishlistSelected() {
+        return this.selectedOption === 'existing';
+    }
+
+    handleOptionChange(event) {
+        this.selectedOption = event.detail.value;
     }
 
     fetchAllWishlists(){
@@ -192,6 +212,19 @@ export default class AtProductSearchResultController extends LightningElement {
     }
 
     handleSave(){
+
+        if (this.selectedOption === 'new' && this.newWishlistName) {
+            console.log('Creating a new wishlist:', this.newWishlistName);
+            // Call Apex method to create a new wishlist and add the product to the wishlist
+            //this.newWishlistName, this.effectiveAccountId, this.currentUserId
+            this.wishlistCreation();
+        } else if (this.selectedOption === 'existing' && this.selectedWishlistId) {
+            console.log('Adding to existing wishlist:', this.selectedWishlistId);
+            // Call Apex method to update the existing wishlist
+            //this.wishlistCreation();
+        } else {
+            console.error('Please select an option and provide the necessary details.');
+        }
         // createWishList({})
         // .then(result=>{
         //     console.log('@@result wish create',result);
@@ -201,6 +234,24 @@ export default class AtProductSearchResultController extends LightningElement {
         //     console.log('@@err-wish- create',err);
         //     this.template.querySelector('c-at-toast-message-utility').showToast('error',  + ' ERROR:' + err + '.');
         // })
+    }
+
+    wishlistCreation(){
+        const wrapperCreateAndAdd = {
+            effectiveAccountId: this.effectiveAccountId,
+            currentUserId: this.currentUserId,
+            wishlistName: this.newWishlistName,
+            existingWishlistId: null,
+            productId: this.productId,
+            typeOfWishlist:'new'
+        };
+        createOrUpdateWishlist({wrapperCreateAndAdd})
+        .then(finalRes=>{
+            console.log('@@finalRes=>>',finalRes);
+        })
+        .catch(finalErr=>{
+            console.log('@@finalErr=>>',finalErr);
+        })
     }
     handleCloseModal() {
         this.isModalOpen = false;

@@ -52,22 +52,42 @@
                     </button>
                 </header>
                 <div class="modal-body">
-                    <lightning-input
-                        class="input-field"
-                        label="New Wishlist Name"
-                        placeholder="Enter name for new wishlist"
-                        value={newWishlistName}
-                        onchange={handleNewWishlistNameChange}>
-                    </lightning-input>
+                    <div class="radio-group">
+                        <lightning-radio-group
+                            name="wishlistOption"
+                            label="Choose an option"
+                            options={wishlistOptions}
+                            value={selectedOption}
+                            onchange={handleOptionChange}>
+                        </lightning-radio-group>
+                    </div>
+                    <!-- Input field for new wishlist name (visible if 'Create New Wishlist' is selected) -->
+                    <template if:true={isNewWishlistSelected}>
+                        <lightning-input
+                            class="input-field"
+                            label="New Wishlist Name"
+                            placeholder="Enter name for new wishlist"
+                            value={newWishlistName}
+                            onchange={handleNewWishlistNameChange}>
+                        </lightning-input>
+                    </template>
+
                     <template if:true={isWishlistAvailable}>
-                        <lightning-combobox
-                            class="dropdown-field"
-                            label="Add to Existing Wishlist"
-                            placeholder="Select a wishlist"
-                            options={wishlists}
-                            value={selectedWishlistId}
-                            onchange={handleWishlistSelection}>
-                        </lightning-combobox>
+                        <template if:true={isExistingWishlistSelected}>
+                            <lightning-combobox
+                                class="dropdown-field"
+                                label="Add to Existing Wishlist"
+                                placeholder="Select a wishlist"
+                                options={wishlists}
+                                value={selectedWishlistId}
+                                onchange={handleWishlistSelection}>
+                            </lightning-combobox>
+                        </template>
+                    </template>
+                    <template if:false={isWishlistAvailable}>
+                        <div class="no-wishlist-message">
+                            <p>You don't have any wishlist. Please create a new one.</p>
+                        </div>
                     </template>
                     
                 </div>
