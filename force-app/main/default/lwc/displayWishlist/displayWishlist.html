@@ -31,8 +31,8 @@
                 <template for:each={wishlists} for:item="wishlist">
                     <lightning-tab label={wishlist.name} key={wishlist.id}>
                         <div class="actions">
-                            <button class="rename-button">Rename</button>
-                            <button class="delete-button">Delete</button>
+                            <button class="rename-button" data-id={wishlist.id} onclick={handleRename}>Rename</button>
+                            <button class="delete-button" data-id={wishlist.id} onclick={handleDelete}>Delete</button>
                         </div>
                         <template if:true={wishlist.products}>
                             <div class="slds-m-around_medium">

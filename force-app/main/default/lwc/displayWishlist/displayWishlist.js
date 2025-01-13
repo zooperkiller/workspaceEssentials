@@ -52,6 +52,12 @@ get isDataAvailable() {
     return this.wishlists && this.wishlists.length > 0;
 }
 
+    handleRename(event){
+        console.log('@@AT-Rename');
+        console.log('@@AT-Rename_2', event.currentTarget.dataset.id);
+
+    }
+
     // async fetchWishlists() {
     //     this.isLoading = true;
     //     try {
