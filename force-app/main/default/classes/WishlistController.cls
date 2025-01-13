@@ -1,29 +1,11 @@
 public without sharing class WishlistController {
     
     Private static final string WEBSTOREID = system.label.WS_WebStoreID;
-    // Public method to create or update a wishlist
-    // This is the initial method to call,check && act.
-    @AuraEnabled
-    public static void createOrUpdateWishlist(String effectiveAccountId, String currentUserId, String wishlistName ,String existingWishlistId, String ProdId) {
-        string webstoreId = system.label.WS_WebStoreID;
-        // Get existing wishlists
-        List<Wishlist> wishlists = getAllWishlists(effectiveAccountId, currentUserId);
-        
-        if (wishlists.size() > 0) {
-            ConnectApi.WishlistItemInput wishlistItemInput = new ConnectApi.WishlistItemInput();
-            wishlistItemInput.productId = ProdId;
-            
-            ConnectApi.WishlistItem addProductToWishlist = ConnectApi.CommerceWishlist.addItemToWishlist(webstoreId, effectiveAccountId, existingWishlistId, wishlistItemInput);
-        } else {
-            // Create a new wishlist
-            createNewWishlist(effectiveAccountId, currentUserId, wishlistName);
-        }
-    }
     
     @AuraEnabled
     public static List<Wishlist> getAllWishlists(string effectiveAccountId, string currentUserId) {
         return [SELECT Id, Name FROM Wishlist 
-                WHERE WebStoreId  = '0ZEWU000001cxGD4AY'
+                WHERE WebStoreId  =: WEBSTOREID
                 AND AccountId =: effectiveAccountId
                 AND OwnerId =:currentUserId
                ];
@@ -68,6 +50,26 @@ public without sharing class WishlistController {
         return null;
     }
     
+    @AuraEnabled
+    public static string updateWishlist(WishlistWrapper wrapper){
+        String effectiveAccountId = wrapper.effectiveAccountId;
+        String currentUserId = wrapper.currentUserId;
+        String wishlistName = wrapper.wishlistName;
+        String existingWishlistId = wrapper.existingWishlistId;
+        String productId = wrapper.productId;
+        String typeOfWishlist = wrapper.typeOfWishlist;
+        
+        if(typeOfWishlist == 'existing'){
+            ConnectApi.WishlistItemInput wishlistItemInput = new ConnectApi.WishlistItemInput();
+            wishlistItemInput.productId = productId;
+            
+            ConnectApi.WishlistItem addProductToWishlist = ConnectApi.CommerceWishlist.addItemToWishlist(WEBSTOREID, effectiveAccountId, existingWishlistId, wishlistItemInput);
+            string listItemId = addProductToWishlist.wishlistItemId;
+            system.debug('@@'+addProductToWishlist);
+            return listItemId;
+        }
+        return null;
+    }
     
     
     
