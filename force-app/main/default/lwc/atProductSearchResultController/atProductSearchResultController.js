@@ -21,6 +21,7 @@ import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 import NAME_FIELD from '@salesforce/schema/User.Name';
 import getAllWishlists from '@salesforce/apex/WishlistController.getAllWishlists';
 import updateWishlist from '@salesforce/apex/WishlistController.updateWishlist';
+import getMultipleWishlists from '@salesforce/apex/WishlistController.getMultipleWishlists';
 
 
 
@@ -272,5 +273,19 @@ export default class AtProductSearchResultController extends LightningElement {
     }
     handleCloseModal() {
         this.isModalOpen = false;
+    }
+
+
+
+    //
+    handleShowWishlist(){
+        console.log('@@inside handleShowWishlist');
+        getMultipleWishlists({currentUserId:this.currentUserId,effectiveAccountId:this.effectiveAccountId, productFields:null})
+        .then(result=>{
+            console.log('@@result wish',result);
+        })
+        .catch(c=>{
+            console.log('@@c',c);
+        })
     }
 }
