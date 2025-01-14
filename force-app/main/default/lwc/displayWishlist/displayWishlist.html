@@ -1,0 +1,67 @@
+<!-- <template>
+    <h1>LIST OF WISHLISTS.....................</h1>
+    <lightning-card title="Wishlists">
+        <template if:true={wishlistData}>
+            <lightning-tabset active-tab-value={activeTabId} onactive={handleTabChange}>
+                
+                <template for:each={wishlistData} for:item="wishlist">
+                    <lightning-tab 
+                        key={wishlist.wishlistId} 
+                        label={wishlist.wishlistName} 
+                        value={wishlist.wishlistId}>
+                        
+                        
+                        <template if:true={wishlist.isActive}>
+                            <c-wishlist-products products={wishlist.products}></c-wishlist-products>
+                        </template>
+                    </lightning-tab>
+                </template>
+            </lightning-tabset>
+        </template>
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading wishlists..."></lightning-spinner>
+        </template>
+    </lightning-card>
+</template> -->
+<template>
+    <lightning-card title="Wishlists">
+        <button class="create-list">+ Create List</button>
+        <template if:true={isDataAvailable}>
+            <lightning-tabset>
+                <template for:each={wishlists} for:item="wishlist">
+                    <lightning-tab label={wishlist.name} key={wishlist.id}>
+                        <div class="actions">
+                            <button class="rename-button" data-id={wishlist.id} onclick={handleRename}>Rename</button>
+                            <button class="delete-button" data-id={wishlist.id} onclick={handleDelete}>Delete</button>
+                        </div>
+                        <template if:true={wishlist.products}>
+                            <div class="slds-m-around_medium">
+                                <template for:each={wishlist.products} for:item="product">
+                                    <div key={product.productId} class="slds-box slds-m-bottom_small">
+                                        <div class="slds-grid slds-wrap slds-grid_vertical-align-center">
+                                            <div class="slds-col slds-size_1-of-6">
+                                                <img src={product.imageUrl} alt={product.name} style="max-width: 100%;" />
+                                            </div>
+                                            <div class="slds-col slds-size_5-of-6">
+                                                <p><strong>{product.name}</strong></p>
+                                                <p>SKU: {product.sku}</p>
+                                                <p>Price: ₹{product.salesPrice}</p>
+                                            </div>
+                                        </div>
+                                        <div class="actions">
+                                            <button class="add-to-cart">Add to Cart</button>
+                                        </div>
+                                    </div>
+                                </template>
+                                <button class="add-all-to-cart">Add All Items to Cart</button>
+                            </div>
+                        </template>
+                    </lightning-tab>
+                </template>
+            </lightning-tabset>
+        </template>
+        <template if:false={isDataAvailable}>
+            <p>No wishlists found</p>
+        </template>
+    </lightning-card>
+</template>

@@ -1,0 +1,34 @@
+<template>
+    <div class="my-lists-container">
+        <div class="header">
+            <h1>My Lists</h1>
+            <button class="create-list">+ Create List</button>
+        </div>
+        <div class="tabs">
+            <template for:each={wishlists} for:item="wishlist">
+                <div
+                    key={list.id}
+                    class="tab"
+                    class={list.active ? 'tab active' : 'tab'}
+                    onclick={handleTabClick}
+                >
+                    {list.name}
+                </div>
+            </template>
+        </div>
+        <div class="actions">
+            <button class="rename-button">Rename</button>
+            <button class="delete-button">Delete</button>
+        </div>
+        <div class="list-item">
+            <img
+                src="/path/to/image.jpg"
+                alt="Product Image"
+                class="product-image"
+            />
+            <div class="details">
+                <h2 class="product-name">
+                    DEWALT Angle Grinder Tool, 4-1/2-Inch, 11-Amp
+                </h2>
+            </div>
+</template>

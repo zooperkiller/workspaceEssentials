@@ -1,8 +1,8 @@
 <template>
     <div>
         <p>effName:{name}</p>
+        <lightning-button variant="Brand" onclick={handleShowWishlist}></lightning-button>
         <c-at-toast-message-utility auto-close-time="8000"></c-at-toast-message-utility>
-        <lightning-button onclick={showToast} label="Show Toast"></lightning-button>
     </div>
     <div>
         <div class="product-page">
@@ -32,9 +32,71 @@
                         <div class="add-to-cart-section">
                             <button class="add-to-cart-btn" id={pDetail.id} data-name={pDetail.fields.Name.value} onclick={handleAddToCart}>ADD TO CART</button>
                         </div>
+                        <div class="add-to-cart-section">
+                            <button class="add-to-wish-btn" data-id={pDetail.id} data-name={pDetail.fields.Name.value} onclick={handleAddToWishlist}>ADD TO WISHLIST</button>
+                        </div>
                     </div>
                 </template>
             </div>
         </div>
     </div>
+
+     <!-- Modal -->
+     <template if:true={isModalOpen}>
+        <div class="modal-container">
+            <section class="modal-content">
+                <header class="modal-header">
+                    <h2>ADD TO WISHLIST</h2>
+                    <button class="close-button" title="Close" onclick={handleCloseModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="Close"></lightning-icon>
+                    </button>
+                </header>
+                <div class="modal-body">
+                    <div class="radio-group">
+                        <lightning-radio-group
+                            name="wishlistOption"
+                            label="Choose an option"
+                            options={wishlistOptions}
+                            value={selectedOption}
+                            onchange={handleOptionChange}>
+                        </lightning-radio-group>
+                    </div>
+                    <!-- Input field for new wishlist name (visible if 'Create New Wishlist' is selected) -->
+                    <template if:true={isNewWishlistSelected}>
+                        <lightning-input
+                            class="input-field"
+                            label="New Wishlist Name"
+                            placeholder="Enter name for new wishlist"
+                            value={newWishlistName}
+                            onchange={handleNewWishlistNameChange}>
+                        </lightning-input>
+                    </template>
+
+                    <template if:true={isWishlistAvailable}>
+                        <template if:true={isExistingWishlistSelected}>
+                            <lightning-combobox
+                                class="dropdown-field"
+                                label="Add to Existing Wishlist"
+                                placeholder="Select a wishlist"
+                                options={wishlists}
+                                value={selectedWishlistId}
+                                onchange={handleWishlistSelection}>
+                            </lightning-combobox>
+                        </template>
+                    </template>
+                    <template if:false={isWishlistAvailable}>
+                        <div class="no-wishlist-message">
+                            <p>You don't have any wishlist. Please create a new one.</p>
+                        </div>
+                    </template>
+                    
+                </div>
+                <footer class="modal-footer">
+                    <button class="button-49" onclick={handleCloseModal}>CANCEL</button>
+                    <button  class="button-50" onclick={handleSave}>SAVE</button>
+                </footer>
+            </section>
+            <div class="backdrop"></div>
+        </div>
+    </template>
 </template>

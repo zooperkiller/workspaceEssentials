@@ -19,7 +19,12 @@ import { getRecord } from 'lightning/uiRecordApi';
 import USER_ID from '@salesforce/user/Id';
 import USER_ACCOUNT_ID from '@salesforce/schema/User.AccountId';
 import NAME_FIELD from '@salesforce/schema/User.Name';
-import { NavigationMixin } from 'lightning/navigation';
+import getAllWishlists from '@salesforce/apex/WishlistController.getAllWishlists';
+import updateWishlist from '@salesforce/apex/WishlistController.updateWishlist';
+import getMultipleWishlists from '@salesforce/apex/WishlistController.getMultipleWishlists';
+
+
+
 export default class AtProductSearchResultController extends LightningElement {
 
 
@@ -34,6 +39,8 @@ export default class AtProductSearchResultController extends LightningElement {
     currentUserId = USER_ID;
 
     connectedCallback(){
+
+
         // Initial ID extraction
         this.extractIdFromUrl();
 
@@ -134,5 +141,151 @@ export default class AtProductSearchResultController extends LightningElement {
         
         
        
+    }
+
+    @track wishlists = []; // Store all wishlists for the dropdown
+    @track selectedWishlistId = ''; // Selected wishlist ID
+    @track newWishlistName = ''; // New wishlist name
+    @track isModalOpen = false; // Modal visibility
+    @track isLoading = false;
+    @track isWishlistAvailable = false;
+    @track selectedOption = 'new'; // Default option: 'new' or 'existing'
+    @track prodWish;
+
+
+    handleAddToWishlist(event){
+        console.log('@@Inside Handle Wishlist Page');
+        this.prodWish = event.currentTarget.dataset.id;
+        console.log('@@Product Wish ID:', this.prodWish);
+        this.isModalOpen = true;
+        this.fetchAllWishlists();
+        
+            
+    }
+
+    // Options for the radio group
+    wishlistOptions = [
+        { label: 'Create New Wishlist', value: 'new' },
+        { label: 'Add to Existing Wishlist', value: 'existing' }
+    ];
+
+    get isNewWishlistSelected() {
+        return this.selectedOption === 'new';
+    }
+
+    get isExistingWishlistSelected() {
+        return this.selectedOption === 'existing';
+    }
+
+    handleOptionChange(event) {
+        this.selectedOption = event.detail.value;
+    }
+
+    fetchAllWishlists(){
+        
+        getAllWishlists({currentUserId:this.currentUserId,effectiveAccountId:this.effectiveAccountId})
+        .then(result=>{
+            console.log('@@result wish',result);
+            if(result.length > 0) {
+                this.isWishlistAvailable = true;
+                this.wishlists = result.map(wishlist => ({
+                    label: wishlist.Name,
+                    value: wishlist.Id,
+                }));
+            }
+            else {
+                this.isWishlistAvailable = false;
+            }
+            
+        })
+        .catch(err=>{
+            console.log('@@err-wish',err);
+        })
+    }
+
+    handleWishlistSelection(event) {
+        this.selectedWishlistId = event.target.value;
+        console.log('@@WISHSELECTION-wish',this.selectedWishlistId);
+    }
+
+    handleNewWishlistNameChange(event) {
+        this.newWishlistName = event.target.value;
+        console.log('@@WISHNAME-wish',this.newWishlistName);
+    }
+
+    handleSave(){
+
+        if (this.selectedOption === 'new' && this.newWishlistName) {
+            console.log('Creating a new wishlist:', this.newWishlistName);
+            // Call Apex method to create a new wishlist and add the product to the wishlist
+            this.wishlistCreation();
+        } else if (this.selectedOption === 'existing' && this.selectedWishlistId) {
+            console.log('Adding to existing wishlist:', this.selectedWishlistId);
+            // Call Apex method to update the existing wishlist
+            this.wishlistUpdation();
+        } else {
+            console.error('Please select an option and provide the necessary details.');
+        }
+    }
+
+    //method for creation and adding product to wishlist.
+    wishlistCreation(){
+        const wrapperCreateAndAdd = {
+            effectiveAccountId: this.effectiveAccountId,
+            currentUserId: this.currentUserId,
+            wishlistName: this.newWishlistName,
+            existingWishlistId: null,
+            productId: this.prodWish,
+            typeOfWishlist:'new'
+        };
+        console.log('@@wrapperCreateAndAdd=>>',wrapperCreateAndAdd);
+        createAndAddWishList({wrapper: wrapperCreateAndAdd})
+        .then(finalRes=>{
+            console.log('@@finalRes=>>',finalRes);
+
+
+        })
+        .catch(finalErr=>{
+            console.log('@@finalErr=>>',finalErr);
+        })
+    }
+
+    //method for updating wishlist.
+    wishlistUpdation(){
+        const wrapperUpdate = {
+            effectiveAccountId: this.effectiveAccountId,
+            currentUserId: this.currentUserId,
+            wishlistName: null,
+            existingWishlistId: this.selectedWishlistId,
+            productId: this.prodWish,
+            typeOfWishlist:'existing'
+        };
+        console.log('@@wrapperUpdate=>>',wrapperUpdate);
+        updateWishlist({wrapper: wrapperUpdate})
+        .then(finalRes=>{
+            console.log('@@finalRes=>>',finalRes);
+            this.template.querySelector('c-at-toast-message-utility').showToast('success',  finalRes );
+        })
+        .catch(finalErr=>{
+            console.log('@@finalErr=>>',finalErr);
+            this.template.querySelector('c-at-toast-message-utility').showToast('error', finalErr);
+        })
+    }
+    handleCloseModal() {
+        this.isModalOpen = false;
+    }
+
+
+
+    //
+    handleShowWishlist(){
+        console.log('@@inside handleShowWishlist');
+        getMultipleWishlists({currentUserId:this.currentUserId,effectiveAccountId:this.effectiveAccountId, productFields:null})
+        .then(result=>{
+            console.log('@@result wish',result);
+        })
+        .catch(c=>{
+            console.log('@@c',c);
+        })
     }
 }

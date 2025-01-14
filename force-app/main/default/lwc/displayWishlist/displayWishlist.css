@@ -1,0 +1,43 @@
+.my-lists-container {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.tabs {
+    margin-top: 10px;
+}
+
+.actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.list-items {
+    margin-top: 20px;
+}
+
+.list-item {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.product-image {
+    width: 100px;
+    height: auto;
+}
+
+.details {
+    flex-grow: 1;
+}
