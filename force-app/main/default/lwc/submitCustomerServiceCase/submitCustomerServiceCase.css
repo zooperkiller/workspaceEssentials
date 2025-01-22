@@ -1,3 +1,6 @@
+.orderNumber{
+  background-color: transparent;
+}
 .modal {
   position: fixed;
   top: 0;
