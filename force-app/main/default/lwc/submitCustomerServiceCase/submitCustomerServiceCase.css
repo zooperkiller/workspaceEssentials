@@ -64,8 +64,11 @@
   align-items: center;
 }
 
-.full-width {
-  grid-column: 1 / -1; /* Spans the entire row for Subject and Description */
+.subject {
+  
+}
+.descp {
+  
 }
 
 .modal-footer {
