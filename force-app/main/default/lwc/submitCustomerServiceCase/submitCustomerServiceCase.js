@@ -8,61 +8,34 @@ import BRAND_FIELD from '@salesforce/schema/Case.Brand__c'; // Replace with actu
 
 export default class SubmitCustomerServiceCase extends LightningElement {
 
-
-    @api caseRelatesOptions = [
-    { label: 'Question About My Order', value: 'B2B Customer Inquiry' },
-    { label: 'Modify My Order', value: 'B2B Order Maintenance' },
-    { label: 'Problem With My Order', value: 'B2B Claim/Return' },
-  ];
-
-  @api caseReasonOptions = [
-    { label: 'Reason 1', value: 'reason1' },
-    { label: 'Reason 2', value: 'reason2' },
-  ];
-
-  @api caseSubReasonOptions = [
-    { label: 'Sub-Reason 1', value: 'subreason1' },
-    { label: 'Sub-Reason 2', value: 'subreason2' },
-  ];
-
-  
-
   closeModal() {
     const closeEvent = new CustomEvent('closemodal');
     this.dispatchEvent(closeEvent);
   }
-  @track caseRelatesValue;
-  handleCaseRelatesChange(event){
-    this.caseRelatesValue = event.detail.value;
-    console.log('@@caseRelatesValue',this.caseRelatesValue);
-  }
 
-    @track recordIdMap = {}; // To store the recordTypeId based on name
-    controllingPicklist = []; // Store picklist options
-    dependentPicklist = {}; // Store dependent picklist options
-    finalDependentVal = []; // Final dependent picklist values
-    showpicklist = false;
-    showdependent = false;
-    dependentDisabled = true;
+  @track recordIdMap = {}; // To store the recordTypeId based on name
+    @track recordTypeOptions = []; // Store the record type options for combobox
+    controllingPicklist = []; // Store picklist options for Case Reason
+    dependentPicklist = {}; // Store dependent picklist options for Case Sub Reason
+    finalDependentVal = []; // Final dependent picklist values for Case Sub Reason
 
     @track selectedRecordType = ''; // Track selected record type
+    @track brandOptions = []; // Store options for the BRAND combobox
+    @track selectedBrand = ''; // Track the selected brand
 
-    // This will hold the options for the combobox dropdown (record types)
-   @track recordTypeOptions = [];
-   @track brandOptions = []; // Store options for the BRAND combobox
-   @track selectedBrand = ''; // Track the selected brand
+    // Track if Case Reason and Case Sub Reason should be enabled or disabled
+    @track caseReasonDisabled = true;
+    @track caseSubReasonDisabled = true;
+    @track showCaseSubReason = false; // Track if Case Sub Reason should be displayed
 
+    // Wire to fetch object info for the Case object
     @wire(getObjectInfo, { objectApiName: CASE_OBJECT })
     objectInfo({ error, data }) {
         if (data) {
-            // Accessing the recordTypeInfos field from the response
             const recordTypeInfos = data.recordTypeInfos;
-            console.log('data', data);
-            console.log('recordTypeInfos', recordTypeInfos);
-
-             // Clear the options before adding them to avoid duplicates
-             this.recordTypeOptions = [];
-
+            // Clear the options before adding them to avoid duplicates
+            this.recordTypeOptions = [];
+            
             // Loop through each record type info to find the recordTypeId based on name
             for (const key in recordTypeInfos) {
                 const recordInfo = recordTypeInfos[key];
@@ -76,50 +49,22 @@ export default class SubmitCustomerServiceCase extends LightningElement {
                         label: recordName,
                         value: recordInfo.recordTypeId
                     });
-                   
                 }
             }
-            // Log the options to ensure they are populated
             console.log('recordTypeOptions:', this.recordTypeOptions);
-
         } else if (error) {
-            console.log('error', error);
+            console.log('Error fetching object info:', error);
         }
     }
 
-    // Reactive wire for picklist values based on selected recordTypeId
-    @wire(getPicklistValuesByRecordType, { 
-        objectApiName: CASE_OBJECT,
-        recordTypeId: '$selectedRecordType' // Dynamically bind the selectedRecordType
+    // Wire to fetch BRAND picklist options from the Case object using the Master Record Type
+    @wire(getPicklistValues, { 
+        recordTypeId: '$recordIdMap.Master', // Use the Master recordTypeId dynamically
+        fieldApiName: BRAND_FIELD 
     })
-    fetchPicklist({ error, data }) {
-        if (data && data.picklistFieldValues) {
-            let optionsValue = {};
-            optionsValue["label"] = "--None--";
-            optionsValue["value"] = "--None--";
-            this.controllingPicklist = [optionsValue];
-
-            // Clear dependent picklist values
-            this.finalDependentVal = [];
-            this.showdependent = false;
-            this.dependentDisabled = true;
-
-            data.picklistFieldValues["Case_Reason__c"].values.forEach(optionData => {
-                this.controllingPicklist.push({ label: optionData.label, value: optionData.value });
-            });
-
-            this.dependentPicklist = data.picklistFieldValues["Case_Sub_Reason__c"];
-            this.showpicklist = true;
-        } else if (error) {
-            console.log('Error fetching picklist values:', error);
-        }
-    }
-
-    // Wire to fetch BRAND picklist options from the Case object
-    @wire(getPicklistValues, { recordTypeId: '$recordIdMap.Master', fieldApiName: BRAND_FIELD })
     brandOptionsWire({ error, data }) {
         if (data) {
-          console.log('Brand Values:', data);
+            console.log('Brand Values:', data);
             this.brandOptions = data.values.map(option => ({
                 label: option.label, // Display the label for the picklist options
                 value: option.value // Use the value for the option
@@ -128,35 +73,85 @@ export default class SubmitCustomerServiceCase extends LightningElement {
             console.log('Error fetching BRAND picklist options:', error);
         }
     }
+
+    // Wire to fetch Case Reason and Case Sub Reason picklist values based on selected recordTypeId
+    @wire(getPicklistValuesByRecordType, { 
+        objectApiName: CASE_OBJECT,
+        recordTypeId: '$selectedRecordType' // Dynamically bind the selectedRecordType
+    })
+    fetchPicklist({ error, data }) {
+        if (data && data.picklistFieldValues) {
+            let optionsValue = [];
+            data.picklistFieldValues["Case_Reason__c"].values.forEach(optionData => {
+                if (optionData.value !== "--None--") { // Remove None value from Case Reason
+                    optionsValue.push({ label: optionData.label, value: optionData.value });
+                }
+            });
+
+            this.controllingPicklist = optionsValue; // Set controlling picklist values
+
+            // Reset dependent picklist values and hide Case Sub Reason until valid data is available
+            this.finalDependentVal = [];
+            this.caseSubReasonDisabled = true; // Case Sub Reason should be disabled initially
+            this.showCaseSubReason = false; // Hide Case Sub Reason field initially
+
+            // Check if there are dependent picklist values for Case Sub Reason
+            if (data.picklistFieldValues["Case_Sub_Reason__c"] && data.picklistFieldValues["Case_Sub_Reason__c"].values.length > 0) {
+                this.dependentPicklist = data.picklistFieldValues["Case_Sub_Reason__c"]; // Save the dependent picklist
+                this.dependentPicklist.values.forEach(depVal => {
+                    this.finalDependentVal.push({
+                        label: depVal.label,
+                        value: depVal.value
+                    });
+                });
+                this.showCaseSubReason = true; // Show Case Sub Reason if dependent values are present
+            }
+            
+            this.caseReasonDisabled = false; // Enable Case Reason once the values are fetched
+        } else if (error) {
+            console.log('Error fetching picklist values:', error);
+        }
+    }
+
     // Handle record type change in the dropdown
     handleRecordTypeChange(event) {
         // Get selected record type ID from the dropdown (value of the combobox)
         this.selectedRecordType = event.target.value;
 
-         // Clear all values in case reason and case sub reason
+        // Clear all values in case reason and case sub reason
         this.controllingPicklist = []; // Clear controlling picklist
         this.finalDependentVal = []; // Clear dependent picklist values
-        this.showpicklist = false; // Hide the picklist until data is fetched
-        this.showdependent = false; // Hide dependent picklist
-        this.dependentDisabled = true; // Disable the dependent picklist
+        this.caseReasonDisabled = true; // Disable Case Reason until data is fetched
+        this.caseSubReasonDisabled = true; // Disable Case Sub Reason until data is fetched
+        this.showCaseSubReason = false; // Hide Case Sub Reason initially
     }
 
     // Handle dependent picklist values based on controlling picklist selection
     fetchDependentValue(event) {
-        this.finalDependentVal = [];
-        this.showdependent = false;
+        this.finalDependentVal = []; // Clear Case Sub Reason options
         const selectedVal = event.target.value;
-        this.finalDependentVal.push({ label: "--None--", value: "--None--" });
 
-        let controllerValues = this.dependentPicklist.controllerValues;
-        this.dependentPicklist.values.forEach(depVal => {
-            depVal.validFor.forEach(depKey => {
-                if (depKey === controllerValues[selectedVal]) {
-                    this.dependentDisabled = false;
-                    this.showdependent = true;
-                    this.finalDependentVal.push({ label: depVal.label, value: depVal.value });
-                }
+        // Ensure dependentPicklist and controllerValues are defined before using forEach
+        if (this.dependentPicklist && this.dependentPicklist.controllerValues && selectedVal) {
+            let controllerValues = this.dependentPicklist.controllerValues;
+
+            // Loop through the dependent values and filter them based on the controllerValues
+            this.dependentPicklist.values.forEach(depVal => {
+                depVal.validFor.forEach(depKey => {
+                    if (depKey === controllerValues[selectedVal]) {
+                        this.caseSubReasonDisabled = false; // Enable Case Sub Reason if a valid selection is made
+                        this.finalDependentVal.push({ label: depVal.label, value: depVal.value });
+                    }
+                });
             });
-        });
+
+            // If no matching dependent values, keep Case Sub Reason disabled
+            if (this.finalDependentVal.length === 0) {
+                this.caseSubReasonDisabled = true;
+            }
+        } else {
+            // Case Reason does not have any dependent values, disable Case Sub Reason
+            this.caseSubReasonDisabled = true;
+        }
     }
 }

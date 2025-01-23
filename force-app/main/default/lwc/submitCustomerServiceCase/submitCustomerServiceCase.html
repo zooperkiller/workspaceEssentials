@@ -8,18 +8,21 @@
       <lightning-combobox label="Select Record Type" value={selectedRecordType} options={recordTypeOptions}
         onchange={handleRecordTypeChange}></lightning-combobox>
       
-      <!-- Display Controlling Picklist -->
-      <template if:true={showpicklist}>
-        <lightning-combobox label="Case Reason" options={controllingPicklist}
-          onchange={fetchDependentValue}></lightning-combobox>
-      </template>
-      
-      <!-- Display Dependent Picklist -->
-      <template if:true={showdependent}>
-        <lightning-combobox label="Case Sub Reason" options={finalDependentVal}
-          disabled={dependentDisabled}></lightning-combobox>
-      </template>
-        
+        <lightning-combobox
+        label="Case Reason"
+        options={controllingPicklist}
+        onchange={fetchDependentValue}
+        disabled={caseReasonDisabled}
+    ></lightning-combobox>
+
+    <!-- Conditionally rendered Case Sub Reason -->
+    <template if:true={showCaseSubReason}>
+      <lightning-combobox
+          label="Case Sub Reason"
+          options={finalDependentVal}
+          disabled={caseSubReasonDisabled} 
+      ></lightning-combobox>
+  </template>
         
       <div class="modal-content">
         <div class="form-grid">
