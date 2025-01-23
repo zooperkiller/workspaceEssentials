@@ -5,46 +5,36 @@
         <h2>Submit Customer Service Case</h2>
         <button class="close-button" onclick={closeModal} aria-label="Close">×</button>
       </header>
-      <lightning-combobox label="Select Record Type" value={selectedRecordType} options={recordTypeOptions}
-        onchange={handleRecordTypeChange}></lightning-combobox>
-      
-        <lightning-combobox
-        label="Case Reason"
-        options={controllingPicklist}
-        onchange={fetchDependentValue}
-        disabled={caseReasonDisabled}
-    ></lightning-combobox>
-
-    <!-- Conditionally rendered Case Sub Reason -->
-    <template if:true={showCaseSubReason}>
-      <lightning-combobox
-          label="Case Sub Reason"
-          options={finalDependentVal}
-          disabled={caseSubReasonDisabled} 
-      ></lightning-combobox>
-  </template>
-        
       <div class="modal-content">
         <div class="form-grid">
           <!-- First Row -->
-          <lightning-combobox label="Case Relates to:" options={caseRelatesOptions} required onchange={handleCaseRelatesChange}></lightning-combobox>
-          <lightning-input type="text" label="Account" value="1034253 - MID-STATE SUPPLY CO INC" disabled></lightning-input>          
+          <lightning-combobox label="Case Relates to:" value={selectedRecordType} options={recordTypeOptions}
+            onchange={handleRecordTypeChange}></lightning-combobox>
+
+          <lightning-input type="text" label="Account" value="1034253 - MID-STATE SUPPLY CO INC"
+            disabled></lightning-input>
         </div>
         <div class="form-grid2">
-            <!-- Second Row -->
-          <lightning-combobox label="Case Reason" options={caseReasonOptions} required ></lightning-combobox>
-          <lightning-combobox label="Case Sub-Reason" options={caseSubReasonOptions}></lightning-combobox>
+          <!-- Second Row -->
+          <lightning-combobox label="Case Reason" options={controllingPicklist} onchange={fetchDependentValue}
+            disabled={caseReasonDisabled}></lightning-combobox>
+
+          <!-- Conditionally rendered Case Sub Reason -->
+          <template if:true={showCaseSubReason}>
+            <lightning-combobox label="Case Sub Reason" options={finalDependentVal}
+              disabled={caseSubReasonDisabled}></lightning-combobox>
+          </template>
           <lightning-combobox label="Brand" options={brandOptions} value={selectedBrand}></lightning-combobox>
 
           <!-- Third Row -->
-          <lightning-input type="text" label="Order Number"></lightning-input> 
+          <lightning-input type="text" label="Order Number"></lightning-input>
           <lightning-input type="text" label="Quote Number"></lightning-input>
           <lightning-input type="text" label="PO Number"></lightning-input>
 
         </div>
 
         <div class="form-grid3">
-            <!-- Fourth Row -->
+          <!-- Fourth Row -->
           <lightning-input type="text" label="Subject" required class="subject"></lightning-input>
           <lightning-textarea label="Description" required class="descp"></lightning-textarea>
         </div>
