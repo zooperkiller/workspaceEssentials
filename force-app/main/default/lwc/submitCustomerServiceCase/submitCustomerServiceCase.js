@@ -1,7 +1,11 @@
 import { LightningElement,api,track,wire } from 'lwc';
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
-import { getPicklistValuesByRecordType } from 'lightning/uiObjectInfoApi';
+import { getPicklistValuesByRecordType  } from 'lightning/uiObjectInfoApi';
+import { getPicklistValues } from 'lightning/uiObjectInfoApi';
+
 import CASE_OBJECT from '@salesforce/schema/Case';
+import BRAND_FIELD from '@salesforce/schema/Case.Brand__c'; // Replace with actual field API name if it's custom
+
 export default class SubmitCustomerServiceCase extends LightningElement {
 
 
@@ -21,10 +25,7 @@ export default class SubmitCustomerServiceCase extends LightningElement {
     { label: 'Sub-Reason 2', value: 'subreason2' },
   ];
 
-  @api brandOptions = [
-    { label: 'Brand 1', value: 'brand1' },
-    { label: 'Brand 2', value: 'brand2' },
-  ];
+  
 
   closeModal() {
     const closeEvent = new CustomEvent('closemodal');
@@ -48,6 +49,8 @@ export default class SubmitCustomerServiceCase extends LightningElement {
 
     // This will hold the options for the combobox dropdown (record types)
    @track recordTypeOptions = [];
+   @track brandOptions = []; // Store options for the BRAND combobox
+   @track selectedBrand = ''; // Track the selected brand
 
     @wire(getObjectInfo, { objectApiName: CASE_OBJECT })
     objectInfo({ error, data }) {
@@ -112,6 +115,19 @@ export default class SubmitCustomerServiceCase extends LightningElement {
         }
     }
 
+    // Wire to fetch BRAND picklist options from the Case object
+    @wire(getPicklistValues, { recordTypeId: '$recordIdMap.Master', fieldApiName: BRAND_FIELD })
+    brandOptionsWire({ error, data }) {
+        if (data) {
+          console.log('Brand Values:', data);
+            this.brandOptions = data.values.map(option => ({
+                label: option.label, // Display the label for the picklist options
+                value: option.value // Use the value for the option
+            }));
+        } else if (error) {
+            console.log('Error fetching BRAND picklist options:', error);
+        }
+    }
     // Handle record type change in the dropdown
     handleRecordTypeChange(event) {
         // Get selected record type ID from the dropdown (value of the combobox)
