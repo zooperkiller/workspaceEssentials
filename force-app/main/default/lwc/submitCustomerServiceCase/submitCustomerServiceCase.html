@@ -11,8 +11,12 @@
           <lightning-combobox label="Case Relates to:" value={selectedRecordType} options={recordTypeOptions}
             onchange={handleRecordTypeChange}></lightning-combobox>
 
-          <lightning-input type="text" label="Account" value="1034253 - MID-STATE SUPPLY CO INC"
-            disabled></lightning-input>
+            <lightning-input type="search" label="Account" value={searchQuery} onchange={handleSearchChange} 
+            placeholder="Search Accounts..." ></lightning-input>
+
+          <!-- Dropdown to show Accounts -->
+          <lightning-combobox label="Select Account" value={selectedAccountId} options={accountOptions} 
+            onchange={handleAccountSelection}></lightning-combobox>
         </div>
         <div class="form-grid2">
           <!-- Second Row -->

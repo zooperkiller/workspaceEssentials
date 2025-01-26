@@ -6,6 +6,8 @@ import { getPicklistValues } from 'lightning/uiObjectInfoApi';
 import CASE_OBJECT from '@salesforce/schema/Case';
 import BRAND_FIELD from '@salesforce/schema/Case.Brand__c'; // Replace with actual field API name if it's custom
 
+import getAccounts from '@salesforce/apex/LWRCaseReasonDetails.getAccounts'; // Apex method to fetch accounts
+
 export default class SubmitCustomerServiceCase extends LightningElement {
 
   closeModal() {
@@ -13,7 +15,51 @@ export default class SubmitCustomerServiceCase extends LightningElement {
     this.dispatchEvent(closeEvent);
   }
 
-  @track recordIdMap = {}; // To store the recordTypeId based on name
+
+    searchQuery = ''; // To store search query
+    @track accountOptions = []; // To store dropdown options for accounts
+    selectedAccountId = ''; // To store selected account ID
+
+     // Handle changes to the search input
+     handleSearchChange(event) {
+        this.searchQuery = event.target.value;
+        console.log('@@',this.searchQuery);
+        console.log('@@1',this.searchQuery.length);
+        if (this.searchQuery.length > 2) {
+            console.log('@@3',this.searchQuery);
+            this.searchAccounts(); // Trigger search when query length is more than 2 characters
+        } else {
+            this.accountOptions = []; // Clear options if search query is short
+        }
+    }
+
+    // Fetch accounts based on search query
+    searchAccounts() {
+        getAccounts({ query: this.searchQuery })  // Call Apex to fetch matching accounts
+            .then((result) => {
+                console.log('@@4',result);
+                if (result.length > 0) {
+                    this.accountOptions = result.map(account => ({
+                        label: account.Name,
+                        value: account.Id
+                    }));
+                } else {
+                    this.accountOptions = []; // Clear dropdown if no results
+                }
+            })
+            .catch((error) => {
+                console.log('Error fetching accounts', error);
+                this.accountOptions = []; // Handle error by clearing options
+            });
+    }
+
+    handleAccountSelection(event) {
+        this.selectedAccountId = event.detail.value; // Set selected account ID
+        console.log('@@5',this.selectedAccountId);
+    }
+
+
+    @track recordIdMap = {}; // To store the recordTypeId based on name
     @track recordTypeOptions = []; // Store the record type options for combobox
     controllingPicklist = []; // Store picklist options for Case Reason
     dependentPicklist = {}; // Store dependent picklist options for Case Sub Reason
