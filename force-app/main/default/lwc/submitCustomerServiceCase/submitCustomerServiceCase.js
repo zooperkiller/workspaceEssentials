@@ -16,48 +16,49 @@ export default class SubmitCustomerServiceCase extends LightningElement {
   }
 
 
-    searchQuery = ''; // To store search query
-    @track accountOptions = []; // To store dropdown options for accounts
-    selectedAccountId = ''; // To store selected account ID
+  @track selectedValue = ''; // Stores the value selected by the user
+  @track searchResults = []; // Stores search results for dropdown
+  searchQuery = ''; // Stores the search query
 
-     // Handle changes to the search input
-     handleSearchChange(event) {
-        this.searchQuery = event.target.value;
-        console.log('@@',this.searchQuery);
-        console.log('@@1',this.searchQuery.length);
-        if (this.searchQuery.length > 2) {
-            console.log('@@3',this.searchQuery);
-            this.searchAccounts(); // Trigger search when query length is more than 2 characters
-        } else {
-            this.accountOptions = []; // Clear options if search query is short
-        }
-    }
+  // Handles search input change
+  search(event) {
+      this.searchQuery = event.target.value;
+      if (this.searchQuery.length >= 1) {
+          this.fetchSearchResults(); // Fetch results when query is longer than 2 characters
+      } else {
+          this.searchResults = []; // Clear results if query is short
+      }
+  }
 
-    // Fetch accounts based on search query
-    searchAccounts() {
-        getAccounts({ query: this.searchQuery })  // Call Apex to fetch matching accounts
-            .then((result) => {
-                console.log('@@4',result);
-                if (result.length > 0) {
-                    this.accountOptions = result.map(account => ({
-                        label: account.Name,
-                        value: account.Id
-                    }));
-                } else {
-                    this.accountOptions = []; // Clear dropdown if no results
-                }
-            })
-            .catch((error) => {
-                console.log('Error fetching accounts', error);
-                this.accountOptions = []; // Handle error by clearing options
-            });
-    }
+  // Fetch accounts based on the search query
+  fetchSearchResults() {
+      getAccounts({ query: this.searchQuery })  // Call Apex to fetch matching accounts
+          .then((result) => {
+              this.searchResults = result.map(account => ({
+                  label: account.Name,
+                  value: account.Id
+              }));
+          })
+          .catch((error) => {
+              console.error('Error fetching accounts', error);
+              this.searchResults = []; // Clear results in case of error
+          });
+  }
 
-    handleAccountSelection(event) {
-        this.selectedAccountId = event.detail.value; // Set selected account ID
-        console.log('@@5',this.selectedAccountId);
-    }
+  // Handles when an option is selected from the dropdown
+  selectSearchResult(event) {
+      const value = event.currentTarget.dataset.value;
+      const selectedResult = this.searchResults.find(result => result.value === value);
+      this.selectedValue = selectedResult ? selectedResult.label : ''; // Set the selected value
+      this.searchResults = []; // Clear search results after selection
+  }
 
+  // Optionally show the dropdown when the input is focused
+  showPickListOptions() {
+      if (this.searchQuery.length > 2) {
+          this.fetchSearchResults(); // Fetch results when the user focuses on the input
+      }
+  }
 
     @track recordIdMap = {}; // To store the recordTypeId based on name
     @track recordTypeOptions = []; // Store the record type options for combobox
