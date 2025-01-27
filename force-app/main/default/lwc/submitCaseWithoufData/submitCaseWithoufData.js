@@ -2,9 +2,9 @@ import { LightningElement ,track} from 'lwc';
 import getCustomerServiceMDT from '@salesforce/apex/LWRCaseReasonDetails.getCustomerServiceMDT'; // Apex method to fetch accounts
 
 export default class SubmitCaseWithoufData extends LightningElement {
-   /* @track selectedCaseRecordType = '';
-    @track selectedCaseReason = '';
-    @track selectedCaseSubReason = '';
+   @track selectedCaseRecordType1 = '';
+    @track selectedCaseReason1 = '';
+    @track selectedCaseSubReason1 = '';
   
     // Data structure for dropdown options
     data = {
@@ -57,16 +57,16 @@ export default class SubmitCaseWithoufData extends LightningElement {
     };
   
     // Get options for Case Record Type
-    get caseRecordTypeOptions() {
+    get caseRecordTypeOptions1() {
       const options = Object.keys(this.data).map((key) => ({ label: key, value: key }));
       console.log('Case Record Type Options:', options);
       return options;
     }
   
     // Get options for Case Reason
-    get caseReasonOptions() {
-      if (this.selectedCaseRecordType) {
-        const options = Object.keys(this.data[this.selectedCaseRecordType].reasons).map((key) => ({ label: key, value: key }));
+    get caseReasonOptions1() {
+      if (this.selectedCaseRecordType1) {
+        const options = Object.keys(this.data[this.selectedCaseRecordType1].reasons).map((key) => ({ label: key, value: key }));
         console.log('Case Reason Options:', options);
         return options;
       }
@@ -75,9 +75,9 @@ export default class SubmitCaseWithoufData extends LightningElement {
     }
   
     // Get options for Case Sub-Reason
-    get caseSubReasonOptions() {
-      if (this.selectedCaseRecordType && this.selectedCaseReason) {
-        const subReasons = this.data[this.selectedCaseRecordType].reasons[this.selectedCaseReason];
+    get caseSubReasonOptions1() {
+      if (this.selectedCaseRecordType1 && this.selectedCaseReason1) {
+        const subReasons = this.data[this.selectedCaseRecordType1].reasons[this.selectedCaseReason1];
         const options = subReasons.map((subReason) => ({ label: subReason, value: subReason }));
         console.log('Case Sub-Reason Options:', options);
         return options;
@@ -87,80 +87,121 @@ export default class SubmitCaseWithoufData extends LightningElement {
     }
   
     // Event handler for Case Record Type change
-    handleCaseRecordTypeChange(event) {
-      this.selectedCaseRecordType = event.target.value;
-      this.selectedCaseReason = '';
-      this.selectedCaseSubReason = '';
-      console.log('Selected Case Record Type:', this.selectedCaseRecordType);
+    handleCaseRecordTypeChange1(event) {
+      this.selectedCaseRecordType1 = event.target.value;
+      this.selectedCaseReason1 = '';
+      this.selectedCaseSubReason1 = '';
+      console.log('Selected Case Record Type:', this.selectedCaseRecordType1);
     }
   
     // Event handler for Case Reason change
-    handleCaseReasonChange(event) {
-      this.selectedCaseReason = event.target.value;
-      this.selectedCaseSubReason = '';
-      console.log('Selected Case Reason:', this.selectedCaseReason);
+    handleCaseReasonChange1(event) {
+      this.selectedCaseReason1 = event.target.value;
+      this.selectedCaseSubReason1 = '';
+      console.log('Selected Case Reason:', this.selectedCaseReason1);
     }
-*/
-    @track showSecond =  true;
-    @track caseRecordTypeOptions = [];
-    @track caseReasonOptions = [];
-    @track caseSubReasonOptions = [];
 
-    selectedCaseRecordType;
-    selectedCaseReason;
-    selectedCaseSubReason;
 
-    handleClick() {
-        getCustomerServiceMDT()
-            .then((result) => {
-                console.log('Selected Case Reason:', result);
-                // Extract unique values for RecordType1, Reason1, and SubReason1
-                const recordTypes = new Set();
-                const reasons = new Set();
-                const subReasons = new Set();
+    /*SHOW CUSTOMER INQUIRY BASED ON CUSTOM METADATA*/ 
+@track showSecond =  true;
+@track caseRecordTypeOptions = [];
+@track caseReasonOptions = [];
+@track caseSubReasonOptions = [];
 
-                result.forEach((item) => {
-                    if (item.RecordType1__c) {
-                        recordTypes.add(item.RecordType1__c);
-                    }
-                    if (item.Reason1__c) {
-                        reasons.add(item.Reason1__c);
-                    }
-                    if (item.SubReason1__c) {
-                        subReasons.add(item.SubReason1__c);
-                    }
-                });
+@track selectedCaseRecordType;
+@track selectedCaseReason;
+@track selectedCaseSubReason;
 
-                // Convert sets to arrays of objects suitable for combobox
-                this.caseRecordTypeOptions = Array.from(recordTypes).map((type) => ({
-                    label: type,
-                    value: type,
-                }));
+isCaseReasonVisible = false;
+isCaseSubReasonVisible = false;
+isCaseSubReasonDisabled = true;
 
-                this.caseReasonOptions = Array.from(reasons).map((reason) => ({
-                    label: reason,
-                    value: reason,
-                }));
+metadata = []; // To store the entire MDT data
 
-                this.caseSubReasonOptions = Array.from(subReasons).map((subReason) => ({
-                    label: subReason,
-                    value: subReason,
-                }));
-            })
-            .catch((error) => {
-                console.error('Error fetching metadata:', error);
+handleClick() {
+    getCustomerServiceMDT()
+        .then((result) => {
+            // Store the metadata for dynamic filtering later
+            this.metadata = result;
+
+            // Extract unique record types
+            const recordTypes = new Set();
+            result.forEach((item) => {
+                if (item.RecordType1__c) {
+                    recordTypes.add(item.RecordType1__c);
+                }
             });
-    }
 
-    handleCaseRecordTypeChange(event) {
-        this.selectedCaseRecordType = event.detail.value;
-    }
+            // Populate Record Type combobox options
+            this.caseRecordTypeOptions = Array.from(recordTypes).map((type) => ({
+                label: type,
+                value: type,
+            }));
+        })
+        .catch((error) => {
+            console.error('Error fetching metadata:', error);
+        });
+}
 
-    handleCaseReasonChange(event) {
-        this.selectedCaseReason = event.detail.value;
-    }
+handleCaseRecordTypeChange(event) {
+    this.selectedCaseRecordType = event.detail.value;
 
-    handleCaseSubReasonChange(event) {
-        this.selectedCaseSubReason = event.detail.value;
-    }
+    // Filter metadata for the selected Record Type
+    const filteredMetadata = this.metadata.filter(
+        (item) => item.RecordType1__c === this.selectedCaseRecordType
+    );
+
+    // Populate the Case Reason combobox
+    const reasons = new Set();
+    filteredMetadata.forEach((item) => {
+        if (item.Reason1__c) {
+            reasons.add(item.Reason1__c);
+        }
+    });
+
+    this.caseReasonOptions = Array.from(reasons).map((reason) => ({
+        label: reason,
+        value: reason,
+    }));
+
+    // Show the Case Reason combobox
+    this.isCaseReasonVisible = true;
+    this.isCaseSubReasonVisible = false; // Hide Sub-Reason until a reason is selected
+    this.isCaseSubReasonDisabled = true; // Disable Sub-Reason by default
+    this.selectedCaseReason = null; // Reset selections
+    this.selectedCaseSubReason = null;
+}
+
+handleCaseReasonChange(event) {
+    this.selectedCaseReason = event.detail.value;
+
+    // Filter metadata for the selected Reason
+    const filteredMetadata = this.metadata.filter(
+        (item) =>
+            item.RecordType1__c === this.selectedCaseRecordType &&
+            item.Reason1__c === this.selectedCaseReason
+    );
+
+    // Populate the Case Sub-Reason combobox
+    const subReasons = new Set();
+    filteredMetadata.forEach((item) => {
+        if (item.SubReason1__c) {
+            subReasons.add(item.SubReason1__c);
+        }
+    });
+
+    this.caseSubReasonOptions = Array.from(subReasons).map((subReason) => ({
+        label: subReason,
+        value: subReason,
+    }));
+
+    // Show or disable the Sub-Reason combobox
+    this.isCaseSubReasonVisible = true;
+    this.isCaseSubReasonDisabled = subReasons.size === 0; // Disable if no Sub-Reasons exist
+    this.selectedCaseSubReason = null; // Reset selection
+}
+
+handleCaseSubReasonChange(event) {
+    this.selectedCaseSubReason = event.detail.value;
+}
 }
