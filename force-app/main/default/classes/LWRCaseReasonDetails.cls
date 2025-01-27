@@ -25,4 +25,16 @@ public without sharing class LWRCaseReasonDetails {
         return accounts;
     }
     
+    @AuraEnabled
+    Public static list<Customer_Service_Case__mdt> showCustomMetadata(){
+         return getCustomerServiceMDT();
+    }
+    
+    @testVisible
+    private static list<Customer_Service_Case__mdt> getCustomerServiceMDT(){
+        list<Customer_Service_Case__mdt> mdt = [Select Id,RecordType1__c,Reason1__c,SubReason1__c from Customer_Service_Case__mdt];
+		system.debug('@@'+mdt);
+        return mdt;
+    }
+    
 }

@@ -1,5 +1,5 @@
 import { LightningElement ,track} from 'lwc';
-import getCustomerServiceMDT from '@salesforce/apex/LWRCaseReasonDetails.getCustomerServiceMDT'; // Apex method to fetch accounts
+import showCustomMetadata from '@salesforce/apex/LWRCaseReasonDetails.showCustomMetadata'; // Apex method to fetch accounts
 
 export default class SubmitCaseWithoufData extends LightningElement {
    @track selectedCaseRecordType1 = '';
@@ -119,7 +119,7 @@ isCaseSubReasonDisabled = true;
 metadata = []; // To store the entire MDT data
 
 handleClick() {
-    getCustomerServiceMDT()
+    showCustomMetadata()
         .then((result) => {
             // Store the metadata for dynamic filtering later
             this.metadata = result;
