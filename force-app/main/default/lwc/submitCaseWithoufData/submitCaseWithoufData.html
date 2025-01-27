@@ -1,0 +1,70 @@
+<template>
+    <lightning-card title="Case Selector" icon-name="standard:case">
+      <div class="slds-p-around_medium">
+        <!-- Case Record Type -->
+        <lightning-combobox
+          name="caseRecordType"
+          label="Case Record Type"
+          value={selectedCaseRecordType}
+          options={caseRecordTypeOptions}
+          onchange={handleCaseRecordTypeChange}>
+        </lightning-combobox>
+  
+        <!-- Case Reason -->
+        <lightning-combobox
+          name="caseReason"
+          label="Case Reason"
+          value={selectedCaseReason}
+          options={caseReasonOptions}
+          onchange={handleCaseReasonChange}
+          class="slds-m-top_medium">
+        </lightning-combobox>
+  
+        <!-- Case Sub-Reason -->
+        <lightning-combobox
+          name="caseSubReason"
+          label="Case Sub-Reason"
+          value={selectedCaseSubReason}
+          options={caseSubReasonOptions}
+          class="slds-m-top_medium">
+        </lightning-combobox>
+      </div>
+    </lightning-card>
+
+
+        <template if:true={showSecond}>
+            <lightning-button variant="Brand" onclick={handleClick} label="SHOW METADATA"></lightning-button>
+            <lightning-card title="Case Selector MetaData" icon-name="standard:case">
+                <div class="slds-p-around_medium">
+                    <!-- Case Record Type -->
+                    <lightning-combobox
+                        name="caseRecordType"
+                        label="Case Record Type"
+                        value={selectedCaseRecordType}
+                        options={caseRecordTypeOptions}
+                        onchange={handleCaseRecordTypeChange}>
+                    </lightning-combobox>
+
+                    <!-- Case Reason -->
+                    <lightning-combobox
+                        name="caseReason"
+                        label="Case Reason"
+                        value={selectedCaseReason}
+                        options={caseReasonOptions}
+                        onchange={handleCaseReasonChange}
+                        class="slds-m-top_medium">
+                    </lightning-combobox>
+
+                    <!-- Case Sub-Reason -->
+                    <lightning-combobox
+                        name="caseSubReason"
+                        label="Case Sub-Reason"
+                        value={selectedCaseSubReason}
+                        options={caseSubReasonOptions}
+                        class="slds-m-top_medium">
+                    </lightning-combobox>
+                </div>
+            </lightning-card>
+        </template>
+  </template>
+  
