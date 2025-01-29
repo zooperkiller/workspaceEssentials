@@ -6,6 +6,8 @@ import { getPicklistValues } from 'lightning/uiObjectInfoApi';
 import CASE_OBJECT from '@salesforce/schema/Case';
 import BRAND_FIELD from '@salesforce/schema/Case.Brand__c'; // Replace with actual field API name if it's custom
 
+import getAccounts from '@salesforce/apex/LWRCaseReasonDetails.getAccounts'; // Apex method to fetch accounts
+
 export default class SubmitCustomerServiceCase extends LightningElement {
 
   closeModal() {
@@ -13,7 +15,52 @@ export default class SubmitCustomerServiceCase extends LightningElement {
     this.dispatchEvent(closeEvent);
   }
 
-  @track recordIdMap = {}; // To store the recordTypeId based on name
+
+  @track selectedValue = ''; // Stores the value selected by the user
+  @track searchResults = []; // Stores search results for dropdown
+  searchQuery = ''; // Stores the search query
+
+  // Handles search input change
+  search(event) {
+      this.searchQuery = event.target.value;
+      if (this.searchQuery.length >= 1) {
+          this.fetchSearchResults(); // Fetch results when query is longer than 2 characters
+      } else {
+          this.searchResults = []; // Clear results if query is short
+      }
+  }
+
+  // Fetch accounts based on the search query
+  fetchSearchResults() {
+      getAccounts({ query: this.searchQuery })  // Call Apex to fetch matching accounts
+          .then((result) => {
+              this.searchResults = result.map(account => ({
+                  label: account.Name,
+                  value: account.Id
+              }));
+          })
+          .catch((error) => {
+              console.error('Error fetching accounts', error);
+              this.searchResults = []; // Clear results in case of error
+          });
+  }
+
+  // Handles when an option is selected from the dropdown
+  selectSearchResult(event) {
+      const value = event.currentTarget.dataset.value;
+      const selectedResult = this.searchResults.find(result => result.value === value);
+      this.selectedValue = selectedResult ? selectedResult.label : ''; // Set the selected value
+      this.searchResults = []; // Clear search results after selection
+  }
+
+  // Optionally show the dropdown when the input is focused
+  showPickListOptions() {
+      if (this.searchQuery.length > 2) {
+          this.fetchSearchResults(); // Fetch results when the user focuses on the input
+      }
+  }
+
+    @track recordIdMap = {}; // To store the recordTypeId based on name
     @track recordTypeOptions = []; // Store the record type options for combobox
     controllingPicklist = []; // Store picklist options for Case Reason
     dependentPicklist = {}; // Store dependent picklist options for Case Sub Reason
