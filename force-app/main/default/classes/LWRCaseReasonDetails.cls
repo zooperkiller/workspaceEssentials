@@ -25,7 +25,7 @@ public without sharing class LWRCaseReasonDetails {
         return accounts;
     }
     
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     Public static list<Customer_Service_Case__mdt> showCustomMetadata(){
          return getCustomerServiceMDT();
     }

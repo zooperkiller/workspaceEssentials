@@ -8,8 +8,14 @@
       <div class="modal-content">
         <div class="form-grid">
           <!-- First Row -->
-          <lightning-combobox label="Case Relates to:" value={selectedRecordType} options={recordTypeOptions}
-            onchange={handleRecordTypeChange}></lightning-combobox>
+          
+          <lightning-combobox
+              name="caseRecordType"
+              label="Case Relates to:"
+              value={selectedCaseRecordType}
+              options={caseRecordTypeOptions}
+              onchange={handleCaseRecordTypeChange}>
+          </lightning-combobox>
 
             <div class="slds-card slds-p-around_medium">
               <div class="slds-form-element">
@@ -41,14 +47,30 @@
         </div>
         <div class="form-grid2">
           <!-- Second Row -->
-          <lightning-combobox label="Case Reason" options={controllingPicklist} onchange={fetchDependentValue}
-            disabled={caseReasonDisabled}></lightning-combobox>
+          <!-- Case Reason -->
+          <template if:true={isCaseReasonVisible}>
+            <lightning-combobox
+                name="caseReason"
+                label="Case Reason"
+                value={selectedCaseReason}
+                options={caseReasonOptions}
+                onchange={handleCaseReasonChange}
+                class="slds-m-top_medium">
+            </lightning-combobox>
+        </template>
 
-          <!-- Conditionally rendered Case Sub Reason -->
-          <template if:true={showCaseSubReason}>
-            <lightning-combobox label="Case Sub Reason" options={finalDependentVal}
-              disabled={caseSubReasonDisabled}></lightning-combobox>
-          </template>
+        <!-- Case Sub-Reason -->
+        <template if:true={isCaseSubReasonVisible}>
+            <lightning-combobox
+                name="caseSubReason"
+                label="Case Sub-Reason"
+                value={selectedCaseSubReason}
+                options={caseSubReasonOptions}
+                onchange={handleCaseSubReasonChange}
+                class="slds-m-top_medium"
+                disabled={isCaseSubReasonDisabled}>
+            </lightning-combobox>
+        </template>
           <lightning-combobox label="Brand" options={brandOptions} value={selectedBrand}></lightning-combobox>
 
           <!-- Third Row -->
