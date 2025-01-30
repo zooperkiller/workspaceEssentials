@@ -1,7 +1,7 @@
 <template>
-    <lightning-card title="Case Selector" icon-name="standard:case">
+    <!-- <lightning-card title="Case Selector" icon-name="standard:case">
       <div class="slds-p-around_medium">
-        <!-- Case Record Type -->
+
         <lightning-combobox
           name="caseRecordType"
           label="Case Record Type"
@@ -9,8 +9,7 @@
           options={caseRecordTypeOptions1}
           onchange={handleCaseRecordTypeChange1}>
         </lightning-combobox>
-  
-        <!-- Case Reason -->
+
         <lightning-combobox
           name="caseReason"
           label="Case Reason"
@@ -20,7 +19,6 @@
           class="slds-m-top_medium">
         </lightning-combobox>
   
-        <!-- Case Sub-Reason -->
         <lightning-combobox
           name="caseSubReason"
           label="Case Sub-Reason"
@@ -29,11 +27,10 @@
           class="slds-m-top_medium">
         </lightning-combobox>
       </div>
-    </lightning-card>
+    </lightning-card> -->
 
     <!--SHOW CUSTOMER INQUIRY BASED ON CUSTOM METADATA-->
-        <template if:true={showSecond}>
-            <lightning-button variant="Brand" onclick={handleClick} label="SHOW METADATA"></lightning-button>
+        
             <lightning-card title="Case Selector MetaData" icon-name="standard:case">
                 <div class="slds-p-around_medium">
                     <!-- Case Record Type -->
@@ -71,6 +68,5 @@
                     </template>
                 </div>
             </lightning-card>
-        </template>
   </template>
   
