@@ -74,9 +74,9 @@
           <lightning-combobox label="Brand" options={brandOptions} value={selectedBrand}></lightning-combobox>
 
           <!-- Third Row -->
-          <lightning-input type="text" label="Order Number"></lightning-input>
-          <lightning-input type="text" label="Quote Number"></lightning-input>
-          <lightning-input type="text" label="PO Number"></lightning-input>
+          <lightning-input type="text" label="Order Number" onchange={handleOrderNumberChange}></lightning-input>
+          <lightning-input type="text" label="Quote Number" onchange={handleQuoteNumberChange}></lightning-input>
+          <lightning-input type="text" label="PO Number" onchange={handlePONumberChange}></lightning-input>
 
         </div>
 

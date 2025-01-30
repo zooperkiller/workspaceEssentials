@@ -132,6 +132,9 @@ export default class SubmitCustomerServiceCase extends LightningElement {
 @track selectedCaseReason;
 @track selectedCaseSubReason;
 
+@track selectedOrderNumber;
+@track selectedQuoteNumber;
+@track selectedPONumber;
 isCaseReasonVisible = false;
 isCaseSubReasonVisible = false;
 isCaseSubReasonDisabled = true;
@@ -230,6 +233,19 @@ handleCaseSubReasonChange(event) {
     console.log('@@-caseSubReason',this.selectedCaseSubReason);
 }
 
+handleOrderNumberChange(event){
+    this.selectedOrderNumber = event.detail.value;
+    console.log('@@-this.selectedOrderNumber',this.selectedOrderNumber);
+    
+}
+handleQuoteNumberChange(event){
+    this.selectedQuoteNumber = event.detail.value;
+    console.log('@@-this.selectedQuoteNumber',this.selectedQuoteNumber);
+}
+handlePONumberChange(event){
+    this.selectedPONumber = event.detail.value;
+    console.log('@@-this.selectedPONumber',this.selectedPONumber);
+}
     // Wire to fetch Case Reason and Case Sub Reason picklist values based on selected recordTypeId
     // @wire(getPicklistValuesByRecordType, { 
     //     objectApiName: CASE_OBJECT,
