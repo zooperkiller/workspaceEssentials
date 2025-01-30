@@ -170,6 +170,8 @@ handleCaseRecordTypeChange(event) {
     this.isCaseSubReasonDisabled = true; // Disable Sub-Reason by default
     this.selectedCaseReason = null; // Reset selections
     this.selectedCaseSubReason = null;
+
+    console.log('@@-caseREcord',this.selectedCaseRecordType);
 }
 
 handleCaseReasonChange(event) {
@@ -199,6 +201,8 @@ handleCaseReasonChange(event) {
     this.isCaseSubReasonVisible = true;
     this.isCaseSubReasonDisabled = subReasons.size === 0; // Disable if no Sub-Reasons exist
     this.selectedCaseSubReason = null; // Reset selection
+
+    console.log('@@-caseReason',this.selectedCaseReason);
 }
 
 handleCaseSubReasonChange(event) {
