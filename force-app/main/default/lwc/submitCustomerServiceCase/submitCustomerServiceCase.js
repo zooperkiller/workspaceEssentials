@@ -6,7 +6,7 @@ import CASE_OBJECT from '@salesforce/schema/Case';
 import BRAND_FIELD from '@salesforce/schema/Case.Brand__c'; // Replace with actual field API name if it's custom
 
 import showCustomMetadata from '@salesforce/apex/LWRCaseReasonDetails.showCustomMetadata'; // Apex method to fetch accounts
-
+import createCaseFromJson from '@salesforce/apex/LWRCaseReasonDetails.createCaseFromJson';
 export default class SubmitCustomerServiceCase extends LightningElement {
 
   closeModal() {
@@ -213,11 +213,17 @@ export default class SubmitCustomerServiceCase extends LightningElement {
     handleCreateCaseSubmission(){
         console.log('@@-Inside Submit Button:');
         // Validate required fields first
+
         if (!this.validateRequiredFields()) return;
 
+        this.caseAssignRecordTypeId =   this.selectedCaseRecordType === 'B2B Customer Inquiry' ? this.recordIdMap["B2B Customer Inquiry"] :
+                                        this.selectedCaseRecordType === 'B2B Claim/Return' ? this.recordIdMap["B2B Claim/Return"] :
+                                        this.selectedCaseRecordType;
+
+                                        console.log('@@-Insid:',this.caseAssignRecordTypeId);
         this.finalCaseCreateData =
         {
-            caseRecordType : this.selectedCaseRecordType != ''? this.selectedCaseRecordType : '',
+            caseRecordType : this.caseAssignRecordTypeId,
             caseReason : this.selectedCaseReason != ''? this.selectedCaseReason : '',
             caseSubReason : this.selectedCaseSubReason != ''? this.selectedCaseSubReason : '',
             orderNumber : this.selectedOrderNumber != ''? this.selectedOrderNumber : '',
@@ -229,11 +235,18 @@ export default class SubmitCustomerServiceCase extends LightningElement {
         console.log('@@-this.finalCaseCreateData',this.finalCaseCreateData);
         console.log('@@-this.finalCaseCreateData',JSON.stringify(this.finalCaseCreateData));
         
+        createCaseFromJson(this.finalCaseCreateData)
+        .then(response => {
+            console.log('@@-response',response);
+        })
+        .catch(error=>{
+            console.log('@@-errorror',error);
+        })
     }
     
     validateRequiredFields() {
         const allValid = [
-            ...this.template.querySelectorAll('lightning-input, lightning-combobox')
+            ...this.template.querySelectorAll('lightning-input, lightning-combobox ,lightning-textarea')
         ].reduce((validSoFar, inputField) => {
             inputField.reportValidity();
             return validSoFar && inputField.checkValidity();
