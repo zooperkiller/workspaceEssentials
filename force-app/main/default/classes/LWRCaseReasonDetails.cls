@@ -73,6 +73,7 @@ public without sharing class LWRCaseReasonDetails {
     @AuraEnabled
     public static void createCaseFromJson(String jsonData) {
         // Check if the JSON input is null or empty
+        System.debug('@@AY'+jsonData);
         if (String.isBlank(jsonData)) {
             throw new IllegalArgumentException('JSON input cannot be null or empty.');
         }
@@ -87,5 +88,43 @@ public without sharing class LWRCaseReasonDetails {
             // Handle JSON parsing errors
             throw new IllegalArgumentException('Invalid JSON input: ' + e.getMessage());
         }
+    }
+
+    public class CaseDetailWrapper {
+        @AuraEnabled public String caseId;
+        @AuraEnabled public String caseNumber;
+        @AuraEnabled public String caseType;
+        @AuraEnabled public String caseSubject;
+        @AuraEnabled public String caseReason;
+        @AuraEnabled public String caseStatus;
+        @AuraEnabled public String caseDate;
+
+        public CaseDetailWrapper(Case caseRec) {
+            this.caseId = caseRec.Id;
+            this.caseNumber = caseRec.CaseNumber;
+            this.caseType = caseRec.Type;
+            this.caseSubject = caseRec.Subject;
+            this.caseReason = caseRec.Case_Reason__c;
+            this.caseStatus = caseRec.Status;
+            this.caseDate = String.valueOf(caseRec.CreatedDate);
+        }
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<CaseDetailWrapper> getCases() {
+        List<CaseDetailWrapper> caseList = new List<CaseDetailWrapper>();
+        try {
+            List<Case> cases = [
+                SELECT Id, CaseNumber, Type, Subject, Case_Reason__c, Status, CreatedDate 
+                FROM Case ORDER BY CreatedDate DESC
+            ];
+            for (Case c : cases) {
+                caseList.add(new CaseDetailWrapper(c));
+            }
+        } catch (Exception e) {
+            System.debug('Error fetching cases: ' + e.getMessage());
+            throw new AuraHandledException('Error retrieving cases. Please try again later.');
+        }
+        return caseList;
     }
 }

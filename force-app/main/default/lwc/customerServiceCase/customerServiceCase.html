@@ -17,14 +17,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>&lt;#&gt;</td>
-            <td>&lt;text&gt;</td>
-            <td>&lt;text&gt;</td>
-            <td>&lt;text&gt;</td>
-            <td>&lt;text&gt;</td>
-            <td>&lt;mm/dd/yyyy&gt;</td>
-          </tr>
+          <template if:true={cases}>
+            <template for:each={cases} for:item="caseRec">
+                <tr key={caseRec.caseId}>
+                    <td style="font-weight:500;">{caseRec.caseNumber}</td>
+                    <td>{caseRec.caseType}</td>
+                    <td>{caseRec.caseSubject}</td>
+                    <td>{caseRec.caseReason}</td>
+                    <td>{caseRec.caseStatus}</td>
+                    <td>{caseRec.caseDate}</td>
+                </tr>
+            </template>
+        </template>
+        <template if:false={cases}>
+            <tr>
+                <td colspan="6">No cases found</td>
+            </tr>
+        </template>
         </tbody>
       </table>
       <template if:true={showModal}>

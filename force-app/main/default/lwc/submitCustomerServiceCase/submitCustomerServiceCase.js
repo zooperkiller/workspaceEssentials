@@ -221,17 +221,16 @@ export default class SubmitCustomerServiceCase extends LightningElement {
                                         this.selectedCaseRecordType;
 
                                         console.log('@@-Insid:',this.caseAssignRecordTypeId);
-        this.finalCaseCreateData =
-        {
-            caseRecordType : this.caseAssignRecordTypeId,
-            caseReason : this.selectedCaseReason != ''? this.selectedCaseReason : '',
-            caseSubReason : this.selectedCaseSubReason != ''? this.selectedCaseSubReason : '',
-            orderNumber : this.selectedOrderNumber != ''? this.selectedOrderNumber : '',
-            quoteNumber : this.selectedQuoteNumber != ''? this.selectedQuoteNumber : '',
-            poNumber : this.selectedPONumber != ''? this.selectedPONumber : '',
-            subject : this.selectedSubject != ''? this.selectedSubject : '',
-            description : this.selectedDescription != ''? this.selectedDescription : ''
-        };
+                                        this.finalCaseCreateData = {
+                                            caseRecordType: this.caseAssignRecordTypeId || '', // Check for null, undefined, or blank
+                                            caseReason: this.selectedCaseReason || '', // Check for null, undefined, or blank
+                                            caseSubReason: this.selectedCaseSubReason || '', // Check for null, undefined, or blank
+                                            orderNumber: this.selectedOrderNumber || '', // Check for null, undefined, or blank
+                                            quoteNumber: this.selectedQuoteNumber || '', // Check for null, undefined, or blank
+                                            poNumber: this.selectedPONumber || '', // Check for null, undefined, or blank
+                                            subject: this.selectedSubject || '', // Check for null, undefined, or blank
+                                            description: this.selectedDescription || '' // Check for null, undefined, or blank
+                                        };
         console.log('@@-this.finalCaseCreateData',this.finalCaseCreateData);
         console.log('@@-this.finalCaseCreateData',JSON.stringify(this.finalCaseCreateData));
         
