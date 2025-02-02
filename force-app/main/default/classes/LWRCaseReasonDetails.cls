@@ -118,7 +118,8 @@ public without sharing class LWRCaseReasonDetails {
                            year;
         }
     }
-
+	
+    
     @AuraEnabled(cacheable=true)
     public static List<CaseDetailWrapper> getCases() {
         List<CaseDetailWrapper> caseList = new List<CaseDetailWrapper>();
