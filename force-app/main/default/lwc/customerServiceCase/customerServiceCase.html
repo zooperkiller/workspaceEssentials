@@ -17,10 +17,10 @@
           </tr>
         </thead>
         <tbody>
-          <template if:true={cases}>
-            <template for:each={cases} for:item="caseRec">
+          <template if:true={paginatedCases}>
+            <template for:each={paginatedCases} for:item="caseRec">
                 <tr key={caseRec.caseId}>
-                    <td style="font-weight:500;">{caseRec.caseNumber}</td>
+                    <td style ="font-weight:500;">{caseRec.caseNumber}</td>
                     <td>{caseRec.caseType}</td>
                     <td>{caseRec.caseSubject}</td>
                     <td>{caseRec.caseReason}</td>
@@ -29,13 +29,19 @@
                 </tr>
             </template>
         </template>
-        <template if:false={cases}>
+        <template if:false={paginatedCases}>
             <tr>
                 <td colspan="6">No cases found</td>
             </tr>
         </template>
         </tbody>
       </table>
+      <!-- Pagination Controls -->
+      <div class="pagination-controls">
+        <button class="nav-button {isPreviousDisabled}" onclick={handlePrevious}>Previous</button>
+        <span>Page {currentPage} of {totalPages}</span>
+        <button class="nav-button {isNextDisabled}" onclick={handleNext}>Next</button>
+      </div>
       <template if:true={showModal}>
       <c-submit-customer-service-case onclosemodal={closeModal}></c-submit-customer-service-case>
     </template>

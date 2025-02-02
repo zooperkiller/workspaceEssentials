@@ -106,7 +106,7 @@ public without sharing class LWRCaseReasonDetails {
             this.caseSubject = caseRec.Subject;
             this.caseReason = caseRec.Case_Reason__c;
             this.caseStatus = caseRec.Status;
-            this.caseDate = String.valueOf(caseRec.CreatedDate);
+            this.caseDate = String.valueOf(caseRec.CreatedDate.date());
         }
     }
 
@@ -125,6 +125,7 @@ public without sharing class LWRCaseReasonDetails {
             System.debug('Error fetching cases: ' + e.getMessage());
             throw new AuraHandledException('Error retrieving cases. Please try again later.');
         }
+        system.debug('@@00:'+caseList);
         return caseList;
     }
 }
