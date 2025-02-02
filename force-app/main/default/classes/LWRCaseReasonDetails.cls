@@ -106,7 +106,16 @@ public without sharing class LWRCaseReasonDetails {
             this.caseSubject = caseRec.Subject;
             this.caseReason = caseRec.Case_Reason__c;
             this.caseStatus = caseRec.Status;
-            this.caseDate = String.valueOf(caseRec.CreatedDate.date());
+           // Extracting the components manually
+           Date onlyDate = caseRec.CreatedDate.date();
+           Integer month = onlyDate.month();
+           Integer day = onlyDate.day();
+           Integer year = onlyDate.year();
+
+           // Formatting as MM-DD-YYYY
+           this.caseDate = (month < 10 ? '0' + month : '' + month) + '-' + 
+                           (day < 10 ? '0' + day : '' + day) + '-' + 
+                           year;
         }
     }
 
@@ -116,7 +125,7 @@ public without sharing class LWRCaseReasonDetails {
         try {
             List<Case> cases = [
                 SELECT Id, CaseNumber, Type, Subject, Case_Reason__c, Status, CreatedDate 
-                FROM Case ORDER BY CreatedDate DESC
+                FROM Case WHERE OwnerId=:UserInfo.getUserId() ORDER BY CreatedDate DESC
             ];
             for (Case c : cases) {
                 caseList.add(new CaseDetailWrapper(c));
@@ -126,6 +135,7 @@ public without sharing class LWRCaseReasonDetails {
             throw new AuraHandledException('Error retrieving cases. Please try again later.');
         }
         system.debug('@@00:'+caseList);
+         system.debug('@@00:'+caseList.size());
         return caseList;
     }
 }
