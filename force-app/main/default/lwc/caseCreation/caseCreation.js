@@ -6,10 +6,10 @@ export default class CaseCreation extends LightningElement {
     @track recordIdMap = {};
     @track caseRecordTypeOptions = [];
     @track selectedCaseRecordType = '';
-    @track caseReasonOptions = []; // Added missing variable
-    @track caseSubReasonOptions = []; // Added missing variable
-    @track isCaseSubReasonDisabled = true; // Ensure it is initialized
-    dependentPicklist; // Store dependent picklist values
+    @track caseReasonOptions = []; 
+    @track caseSubReasonOptions = []; 
+    @track isCaseSubReasonDisabled = true; 
+    dependentPicklist; 
     @track selectedCaseSubReason;
    // excludedCaseReasons = ['Order Status', 'Defective Return'];
    excludedCaseReasons = EXCLUDED_CASE_REASONS.split(',').map(item => item.trim());
@@ -50,8 +50,8 @@ export default class CaseCreation extends LightningElement {
                 }
             });
 
-            this.caseReasonOptions = optionsValue; // Fix: Use correct variable
-            this.caseSubReasonOptions = []; // Reset sub-reason picklist
+            this.caseReasonOptions = optionsValue; 
+            this.caseSubReasonOptions = []; 
             this.isCaseSubReasonDisabled = true;
 
             if (data.picklistFieldValues["Case_Sub_Reason__c"] && data.picklistFieldValues["Case_Sub_Reason__c"].values.length > 0) {
