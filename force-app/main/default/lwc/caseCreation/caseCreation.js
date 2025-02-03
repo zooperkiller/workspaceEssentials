@@ -8,9 +8,11 @@ export default class CaseCreation extends LightningElement {
     @track selectedCaseRecordType = '';
     @track caseReasonOptions = []; 
     @track caseSubReasonOptions = []; 
-    @track isCaseSubReasonDisabled = true; 
-    dependentPicklist; 
+    @track isCaseSubReasonDisabled = true;
+    @track isCaseReasonDisabled = true;
+    dependentPicklist;
     @track selectedCaseSubReason;
+    masterRecordTypeId = '';
    // excludedCaseReasons = ['Order Status', 'Defective Return'];
    excludedCaseReasons = EXCLUDED_CASE_REASONS.split(',').map(item => item.trim());
     @wire(getObjectInfo, { objectApiName: CASE_OBJECT })
@@ -25,12 +27,16 @@ export default class CaseCreation extends LightningElement {
                 const recordInfo = recordTypeInfos[key];
                 const recordName = recordInfo.name;
 
-                if (recordName) {
+                if (recordName === 'B2B Customer Inquiry' || recordName === 'B2B Claim/Return') {
                     this.recordIdMap[recordName] = recordInfo.recordTypeId;
                     this.caseRecordTypeOptions.push({ label: recordName, value: recordInfo.recordTypeId });
                 }
+                if (recordName === 'Master') {
+                    this.masterRecordTypeId = recordInfo.recordTypeId;
+                }
             }
             console.log('@@recordIdMap:', this.recordIdMap);
+            console.log('@@masterRecordTypeId:', this.masterRecordTypeId);
         } else if (error) {
             console.error('Error fetching object info:', error);
             console.log('@@error1:', error);
@@ -53,6 +59,7 @@ export default class CaseCreation extends LightningElement {
             this.caseReasonOptions = optionsValue; 
             this.caseSubReasonOptions = []; 
             this.isCaseSubReasonDisabled = true;
+            this.isCaseReasonDisabled = false;
 
             if (data.picklistFieldValues["Case_Sub_Reason__c"] && data.picklistFieldValues["Case_Sub_Reason__c"].values.length > 0) {
                 this.dependentPicklist = data.picklistFieldValues["Case_Sub_Reason__c"];
@@ -90,6 +97,7 @@ export default class CaseCreation extends LightningElement {
 
     handleRecordTypeChange(event) {
         this.selectedCaseRecordType = event.target.value;
+        this.isCaseReasonDisabled = false;
         console.log('@@selectedCaseRecordType:', this.selectedCaseRecordType);
     }
 
