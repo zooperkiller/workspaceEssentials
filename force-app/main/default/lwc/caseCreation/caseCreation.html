@@ -1,0 +1,30 @@
+<template>
+    <lightning-combobox
+        name="caseRecordType"
+        label="Case Relates to:"
+        value={selectedCaseRecordType}
+        options={caseRecordTypeOptions}
+        onchange={handleRecordTypeChange}
+        required>
+    </lightning-combobox>
+
+    <lightning-combobox
+        name="caseReason"
+        label="Case Reason"
+        value={selectedCaseReason}
+        options={caseReasonOptions}
+        onchange={fetchDependentValue} 
+        class="slds-m-top_medium" 
+        required>
+    </lightning-combobox>
+
+    <lightning-combobox
+        name="caseSubReason"
+        label="Case Sub-Reason"
+        value={selectedCaseSubReason}
+        options={caseSubReasonOptions}
+        onchange={handleCaseSubReasonChange}
+        class="slds-m-top_medium"
+        disabled={isCaseSubReasonDisabled}>
+    </lightning-combobox>
+</template>
