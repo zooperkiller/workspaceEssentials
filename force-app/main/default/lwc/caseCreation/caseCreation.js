@@ -13,6 +13,7 @@ export default class CaseCreation extends LightningElement {
     dependentPicklist;
     @track selectedCaseSubReason;
     masterRecordTypeId = '';
+    @track isLoading = true;
    // excludedCaseReasons = ['Order Status', 'Defective Return'];
    excludedCaseReasons = EXCLUDED_CASE_REASONS.split(',').map(item => item.trim());
     @wire(getObjectInfo, { objectApiName: CASE_OBJECT })
@@ -37,9 +38,11 @@ export default class CaseCreation extends LightningElement {
             }
             console.log('@@recordIdMap:', this.recordIdMap);
             console.log('@@masterRecordTypeId:', this.masterRecordTypeId);
+            this.isLoading =false;
         } else if (error) {
             console.error('Error fetching object info:', error);
             console.log('@@error1:', error);
+            this.isLoading =false;
         }
     }
 
@@ -49,6 +52,7 @@ export default class CaseCreation extends LightningElement {
     })
     fetchPicklist({ error, data }) {
         if (data && data.picklistFieldValues) {
+           
             let optionsValue = [];
             data.picklistFieldValues["Case_Reason__c"].values.forEach(optionData => {
                 if (!this.excludedCaseReasons.includes(optionData.value)) {
@@ -64,9 +68,15 @@ export default class CaseCreation extends LightningElement {
             if (data.picklistFieldValues["Case_Sub_Reason__c"] && data.picklistFieldValues["Case_Sub_Reason__c"].values.length > 0) {
                 this.dependentPicklist = data.picklistFieldValues["Case_Sub_Reason__c"];
             }
+            setTimeout(() => {
+            this.isLoading = false;
+            }, 300); // Adding setTimeout delay
+        
         } else if (error) {
             console.error('Error fetching picklist values:', error);
+            this.isLoading = false;
         }
+        
     }
 
     
@@ -97,6 +107,7 @@ export default class CaseCreation extends LightningElement {
 
     handleRecordTypeChange(event) {
         this.selectedCaseRecordType = event.target.value;
+        this.isLoading = true;
         this.isCaseReasonDisabled = false;
         console.log('@@selectedCaseRecordType:', this.selectedCaseRecordType);
     }
