@@ -115,5 +115,6 @@ export default class CaseCreation extends LightningElement {
     handleCaseSubReasonChange(event){
         this.selectedCaseSubReason = event.detail.value;
         console.log('@@-selectedCaseSubReason',this.selectedCaseSubReason);
+        console.log('@@-selectedCaseSubReason',this.selectedCaseSubReason);
     }
 }
