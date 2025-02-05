@@ -84,7 +84,7 @@ export default class CaseCreation extends LightningElement {
     fetchDependentValue(event) {
         this.caseSubReasonOptions = [];
         const selectedVal = event.target.value;
-
+        console.error('selectedVal:', selectedVal);
         if (this.dependentPicklist && this.dependentPicklist.controllerValues && selectedVal) {
             let controllerValues = this.dependentPicklist.controllerValues;
 
