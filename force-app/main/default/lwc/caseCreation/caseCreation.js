@@ -30,7 +30,13 @@ export default class CaseCreation extends LightningElement {
 
                 if (recordName === 'B2B Customer Inquiry' || recordName === 'B2B Claim/Return') {
                     this.recordIdMap[recordName] = recordInfo.recordTypeId;
-                    this.caseRecordTypeOptions.push({ label: recordName, value: recordInfo.recordTypeId });
+
+                    // Set label based on record name
+                    const label =
+                        recordName === 'B2B Customer Inquiry' ? 'Question about my Order' :
+                        recordName === 'B2B Claim/Return' ? 'Problem with my Order' : recordName;
+
+                    this.caseRecordTypeOptions.push({ label, value: recordInfo.recordTypeId });
                 }
                 if (recordName === 'Master') {
                     this.masterRecordTypeId = recordInfo.recordTypeId;
