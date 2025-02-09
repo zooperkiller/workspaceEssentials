@@ -8,65 +8,63 @@
       <div class="modal-content">
         <div class="form-grid">
           <!-- First Row -->
-          <lightning-combobox label="Case Relates to:" value={selectedRecordType} options={recordTypeOptions}
-            onchange={handleRecordTypeChange}></lightning-combobox>
+          
+          <lightning-combobox
+              name="caseRecordType"
+              label="Case Relates to:"
+              value={selectedCaseRecordType}
+              options={caseRecordTypeOptions}
+              onchange={handleCaseRecordTypeChange}
+              required>
+          </lightning-combobox>
 
-            <div class="slds-card slds-p-around_medium">
-              <div class="slds-form-element">
-                <div class="slds-form-element__control">
-                  <lightning-input label="Searchable Combobox" onchange={search} onfocus={showPickListOptions} type="search"
-                    value={selectedValue} placeholder="Search Accounts">
-                  </lightning-input>
-            
-                  <!-- Dropdown to display search results -->
-                  <div if:true={searchResults} class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
-                    <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                      <template for:each={searchResults} for:item="searchResult">
-                        <li key={searchResult.value} data-value={searchResult.value} role="presentation"
-                          onclick={selectSearchResult} class="slds-listbox__item">
-                          <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
-                            <span class="slds-media__body">
-                              <span class="slds-truncate" title={searchResult.label}>
-                                {searchResult.label}
-                              </span>
-                            </span>
-                          </div>
-                        </li>
-                      </template>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <lightning-input type="text" label="Select Account" ></lightning-input>
         </div>
         <div class="form-grid2">
           <!-- Second Row -->
-          <lightning-combobox label="Case Reason" options={controllingPicklist} onchange={fetchDependentValue}
-            disabled={caseReasonDisabled}></lightning-combobox>
+          <!-- Case Reason -->
+          <template if:true={isCaseReasonVisible}>
+            <lightning-combobox
+                name="caseReason"
+                label="Case Reason"
+                value={selectedCaseReason}
+                options={caseReasonOptions}
+                onchange={handleCaseReasonChange}
+                class="slds-m-top_medium" 
+                required>
+            </lightning-combobox>
+        </template>
 
-          <!-- Conditionally rendered Case Sub Reason -->
-          <template if:true={showCaseSubReason}>
-            <lightning-combobox label="Case Sub Reason" options={finalDependentVal}
-              disabled={caseSubReasonDisabled}></lightning-combobox>
-          </template>
-          <lightning-combobox label="Brand" options={brandOptions} value={selectedBrand}></lightning-combobox>
+        <!-- Case Sub-Reason -->
+        <template if:true={isCaseSubReasonVisible}>
+            <lightning-combobox
+                name="caseSubReason"
+                label="Case Sub-Reason"
+                value={selectedCaseSubReason}
+                options={caseSubReasonOptions}
+                onchange={handleCaseSubReasonChange}
+                class="slds-m-top_medium"
+                disabled={isCaseSubReasonDisabled}>
+            </lightning-combobox>
+        </template>
+          <lightning-combobox label="Brand" options={brandOptions} value={selectedBrand} onchange={handleCaseBrand}></lightning-combobox>
 
           <!-- Third Row -->
-          <lightning-input type="text" label="Order Number"></lightning-input>
-          <lightning-input type="text" label="Quote Number"></lightning-input>
-          <lightning-input type="text" label="PO Number"></lightning-input>
+          <lightning-input type="text" label="Order Number" onchange={handleOrderNumberChange}></lightning-input>
+          <lightning-input type="text" label="Quote Number" onchange={handleQuoteNumberChange}></lightning-input>
+          <lightning-input type="text" label="PO Number" onchange={handlePONumberChange}></lightning-input>
 
         </div>
 
         <div class="form-grid3">
           <!-- Fourth Row -->
-          <lightning-input type="text" label="Subject" required class="subject"></lightning-input>
-          <lightning-textarea label="Description" required class="descp"></lightning-textarea>
+          <lightning-input type="text" label="Subject" required class="subject" onchange={handleSubjectChange}></lightning-input>
+          <lightning-textarea label="Description" required class="descp" onchange={handleDescriptionChange}></lightning-textarea>
         </div>
       </div>
       <footer class="modal-footer">
         <lightning-button label="Cancel" onclick={closeModal} variant="neutral"></lightning-button>
-        <lightning-button label="Submit" variant="brand"></lightning-button>
+        <lightning-button label="Submit" variant="brand" onclick={handleCreateCaseSubmission}></lightning-button>
       </footer>
     </div>
   </section>

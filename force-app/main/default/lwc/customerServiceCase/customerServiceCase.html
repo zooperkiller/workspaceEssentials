@@ -1,34 +1,56 @@
 <template>
-    <div class="container">
+  <div class="container">
       <h1 class="heading">MY CUSTOMER SERVICE CASES</h1>
       <p class="subtext">
-        The list of all Customer Service cases that you opened through SBD365. You can submit a new case to Customer Service on this page.
+          The list of all Customer Service cases that you opened through SBD365. You can submit a new case to Customer Service on this page.
       </p>
-      <button class="submit-button" onclick={openModal}>Submit New Case</button>
-      <table class="cases-table">
-        <thead>
-          <tr>
-            <th>Case Number</th>
-            <th>Case Type</th>
-            <th>Case Subject</th>
-            <th>Case Reason</th>
-            <th>Case Status</th>
-            <th>Case Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>&lt;#&gt;</td>
-            <td>&lt;text&gt;</td>
-            <td>&lt;text&gt;</td>
-            <td>&lt;text&gt;</td>
-            <td>&lt;text&gt;</td>
-            <td>&lt;mm/dd/yyyy&gt;</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="btn-class">
+        <button class="submit-button" onclick={openModal}>Submit New Case</button>
+      </div>
+      
+
+      <template if:true={noCasesFound}>
+          <p class="no-data-message">No cases found.</p>
+      </template>
+
+      <template if:false={noCasesFound}>
+          <table class="cases-table">
+              <thead>
+                  <tr>
+                      <th>Case Number</th>
+                      <th>Case Type</th>
+                      <th>Case Subject</th>
+                      <th>Case Reason</th>
+                      <th>Case Status</th>
+                      <th>Case Date</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <template if:true={paginatedCases}>
+                      <template for:each={paginatedCases} for:item="caseRec">
+                          <tr key={caseRec.caseId}>
+                              <td style="font-weight:700;">{caseRec.caseNumber}</td>
+                              <td>{caseRec.caseType}</td>
+                              <td>{caseRec.caseSubject}</td>
+                              <td>{caseRec.caseReason}</td>
+                              <td>{caseRec.caseStatus}</td>
+                              <td>{caseRec.caseDate}</td>
+                          </tr>
+                      </template>
+                  </template>
+              </tbody>
+          </table>
+
+          <!-- Pagination Controls -->
+          <div class="pagination-controls">
+              <button class="nav-button {isPreviousDisabled}" onclick={handlePrevious}>Previous</button>
+              <span>Page {currentPage} of {totalPages}</span>
+              <button class="nav-button {isNextDisabled}" onclick={handleNext}>Next</button>
+          </div>
+      </template>
+
       <template if:true={showModal}>
-      <c-submit-customer-service-case onclosemodal={closeModal}></c-submit-customer-service-case>
-    </template>
-    </div>
-  </template>
+          <c-submit-customer-service-case onclosemodal={closeModal}></c-submit-customer-service-case>
+      </template>
+  </div>
+</template>
